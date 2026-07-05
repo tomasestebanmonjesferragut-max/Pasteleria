@@ -43,30 +43,39 @@
     </div>
   </header>
 
-  <!-- CONTENIDO: INICIO -->
-  <section class="hero">
-    <div class="hero-inner">
-      <div class="hero-copy reveal">
-        <span class="eyebrow"><i class="bi bi-stars"></i> Repostería casera, hecha a mano</span>
-        <h1>Postres que se sienten <em>como en casa.</em></h1>
-        <p class="lead">Tortas, cupcakes, alfajores y cajitas dulces preparados con ingredientes reales.</p>
-        <div class="hero-cta">
-          <a href="menu.html" class="btn-pill btn-pill-solid"><i class="bi bi-journal-bookmark-fill me-2"></i>Ver el menú</a>
-        </div>
-        <div class="hero-stats">
-          <div><strong>+300</strong><span>pedidos entregados</span></div>
-          <div><strong>100%</strong><span>hecho por encargo</span></div>
-        </div>
+<!-- SECCIÓN: PRODUCTOS DESTACADOS (CARGADOS DESDE MYSQL) -->
+  <section class="section section-alt">
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <span class="tag-label">Recién Horneados</span>
+        <h2>Nuestros Favoritos</h2>
       </div>
-      <div class="hero-visual reveal" aria-hidden="true">
-        <div class="pastry-box">
-          <div class="pastry-box-lid"></div>
-          <div class="pastry-box-icons">
-            <i class="bi bi-cake2-fill"></i>
-            <i class="bi bi-cup-hot-fill"></i>
-          </div>
-          <span class="pastry-tag">hecho hoy<br>con amor</span>
-        </div>
+      
+      <!-- Aquí el Script.js inyectará los últimos 3 productos mágicamente -->
+      <div class="menu-grid" id="featuredGrid"></div>
+      
+      <div style="text-align: center; margin-top: 30px;" class="reveal">
+        <a href="menu.html" class="btn-pill btn-pill-ghost">Ver todo el menú</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN: EL NEGOCIO (FOTO DECORATIVA) -->
+  <section class="section">
+    <div class="section-inner two-col">
+      <div class="col-copy reveal">
+        <span class="tag-label">Sobre Nosotros</span>
+        <h2>Hecho con amor en San Joaquín</h2>
+        <p>Nuestra pastelería nació con el objetivo de llevar el verdadero sabor casero a tu mesa. Trabajamos todos los días con ingredientes frescos y seleccionados para que cada bocado sea una experiencia inolvidable.</p>
+        <ul class="check-list mt-4">
+          <li><i class="bi bi-stars" style="color: var(--berry);"></i> Calidad artesanal garantizada</li>
+          <li><i class="bi bi-stars" style="color: var(--berry);"></i> Diseños 100% personalizados</li>
+        </ul>
+        <a href="nosotros.html" class="btn-pill btn-pill-solid mt-4">Conoce nuestra historia</a>
+      </div>
+      <div class="col-visual reveal">
+        <!-- AQUÍ ESTÁ TU IMAGEN DECORATIVA -->
+        <img src="../img/negocio.jpg" alt="Fachada o interior del negocio" style="width: 100%; border-radius: var(--radius-box); box-shadow: var(--shadow-lift); object-fit: cover; aspect-ratio: 4/3; border: 4px solid #fff;">
       </div>
     </div>
   </section>

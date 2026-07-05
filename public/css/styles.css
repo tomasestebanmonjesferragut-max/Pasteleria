@@ -20,6 +20,7 @@
   --radius-box: 22px;
   --font-display: 'Fraunces', serif;
   --font-body: 'Work Sans', sans-serif;
+  --tu-nuevo-color: #AQUÍ_EL_CÓDIGO_HEX; /*Añade tu color aquí*/
 }
 
 [data-theme="dark"] {
@@ -136,6 +137,8 @@ code {
   display: none; flex-direction: column; justify-content: center; gap: 5px;
   width: 40px; height: 40px; background: transparent; border: none; cursor: pointer;
 }
+
+
 .burger span { display: block; height: 2px; width: 22px; background: var(--choco); margin: 0 auto; }
 
 /* ---------- HERO ---------- */
@@ -463,4 +466,50 @@ code {
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
   .reveal { opacity: 1; transform: none; }
+}
+
+/* ---------- GALERÍA POLAROID INFINITA (NOSOTROS) ---------- */
+.polaroid-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+}
+.polaroid-item {
+    background: #fff;
+    padding: 12px 12px 40px 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    width: 230px; 
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+    position: relative;
+}
+.polaroid-item img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border: 1px solid #f4f4f4;
+}
+.polaroid-text {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    color: var(--choco);
+    font-weight: 600;
+}
+/* Animaciones: Rotaciones intercaladas automáticas */
+.polaroid-item:nth-child(odd) { transform: rotate(-4deg); }
+.polaroid-item:nth-child(even) { transform: rotate(5deg); margin-top: 20px; }
+.polaroid-item:nth-child(3n) { transform: rotate(-2deg); margin-top: -10px; }
+
+/* Efecto al pasar el mouse */
+.polaroid-item:hover {
+    transform: scale(1.1) rotate(0deg);
+    z-index: 10;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
 }

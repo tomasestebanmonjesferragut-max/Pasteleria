@@ -1,38 +1,43 @@
-// ============================================================
-// DULZURA EN TU HOGAR — Módulo de Autenticación (login.js)
-// ============================================================
+/**
+ * @file login.js
+ * @description Módulo de Autenticación, Registro y Control de Sesiones.
+ * @author GhostDev
+ */
+
+'use strict';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Importamos las herramientas globales definidas en Script.js
+    // Importamos las configuraciones y estado desde core.js
     const { CONFIG, State, UI } = window.Dulzura;
 
-    const AuthController = {
-        init: () => {
-            AuthController.updateUI();
-            AuthController.bindEvents();
-        },
+    class AuthController {
+        static init() {
+            this.updateUI();
+            this.bindEvents();
+        }
 
-        updateUI: () => {
+        static updateUI() {
             const uiGuest = document.getElementById('ui-guest');
             const uiLogged = document.getElementById('ui-logged');
             const userNameDisplay = document.getElementById('userNameDisplay');
             const btnGlobalAdmin = document.getElementById('btnGlobalAdmin');
 
             if (State.currentUser) {
-                if(uiGuest) uiGuest.style.display = 'none';
-                if(uiLogged) {
+                // Usuario con sesión activa
+                if (uiGuest) uiGuest.style.display = 'none';
+                if (uiLogged) {
                     uiLogged.style.display = 'flex';
                     const icon = State.currentUser.rol === 'admin' ? '<i class="bi bi-shield-lock-fill"></i>' : '<i class="bi bi-person-heart"></i>';
                     const firstName = State.currentUser.nombre.split(' ')[0]; 
                     userNameDisplay.innerHTML = `${icon} Hola, ${firstName}`;
                 }
                 
-                // Mostrar modo Admin solo si el rol coincide
-                if(btnGlobalAdmin) {
+                // Mostrar botón flotante de Admin solo si tiene los permisos
+                if (btnGlobalAdmin) {
                     btnGlobalAdmin.style.display = State.currentUser.rol === 'admin' ? 'flex' : 'none';
                 }
 
-                // Autocompletar datos en la vista "Pedir"
+                // Autocompletar datos automáticamente en la página "Pedir"
                 const pedidoNombre = document.getElementById('pedidoNombre');
                 const campoTel = document.getElementById('campoTelefonoOculto');
                 const pedidoTelefono = document.getElementById('pedidoTelefono');
@@ -43,14 +48,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     pedidoTelefono.value = State.currentUser.telefono || '';
                 }
             } else {
-                if(uiGuest) uiGuest.style.display = 'flex';
-                if(uiLogged) uiLogged.style.display = 'none';
-                if(btnGlobalAdmin) btnGlobalAdmin.style.display = 'none';
+                // Modo invitado (sin sesión)
+                if (uiGuest) uiGuest.style.display = 'flex';
+                if (uiLogged) uiLogged.style.display = 'none';
+                if (btnGlobalAdmin) btnGlobalAdmin.style.display = 'none';
             }
-        },
+        }
 
-        login: async (e) => {
+        static async login(e) {
             e.preventDefault();
+            const btnSubmit = e.target.querySelector('button[type="submit"]');
+            const originalText = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Verificando...';
+            btnSubmit.disabled = true;
+
             try {
                 const payload = {
                     correo: document.getElementById('loginCorreo').value,
@@ -69,19 +80,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('dulzura_user', JSON.stringify(State.currentUser));
                 
                 UI.closeAllModals();
-                AuthController.updateUI();
+                this.updateUI();
                 document.getElementById('formLogin').reset();
-                UI.showToast(`¡Bienvenido de vuelta, ${State.currentUser.nombre.split(' ')[0]}!`);
+                document.getElementById('loginError').style.display = 'none';
+                
+                UI.showToast(`¡Bienvenido de vuelta, ${State.currentUser.nombre.split(' ')[0]}! 🍰`);
 
             } catch (err) {
                 const errBox = document.getElementById('loginError');
                 errBox.style.display = 'block';
-                errBox.textContent = err.message;
+                errBox.textContent = 'Oops, los datos no coinciden 😿';
+            } finally {
+                btnSubmit.innerHTML = originalText;
+                btnSubmit.disabled = false;
             }
-        },
+        }
 
-        register: async (e) => {
+        static async register(e) {
             e.preventDefault();
+            const btnSubmit = e.target.querySelector('button[type="submit"]');
+            const originalText = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Registrando...';
+            btnSubmit.disabled = true;
+
             try {
                 const payload = {
                     nombre: document.getElementById('regNombre').value,
@@ -98,55 +119,69 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (!res.ok) {
                     const errorData = await res.json();
-                    throw new Error(errorData.error || 'Error al registrar');
+                    throw new Error(errorData.error || 'Error al crear la cuenta');
                 }
 
                 State.currentUser = await res.json();
                 localStorage.setItem('dulzura_user', JSON.stringify(State.currentUser));
                 
                 UI.closeAllModals();
-                AuthController.updateUI();
+                this.updateUI();
                 document.getElementById('formRegister').reset();
-                UI.showToast('¡Cuenta creada exitosamente!');
+                document.getElementById('regError').style.display = 'none';
+                
+                UI.showToast('¡Cuenta creada con mucho amor! 💖');
 
             } catch (err) {
                 const errBox = document.getElementById('regError');
                 errBox.style.display = 'block';
                 errBox.textContent = err.message;
+            } finally {
+                btnSubmit.innerHTML = originalText;
+                btnSubmit.disabled = false;
             }
-        },
+        }
 
-        logout: () => {
+        static logout() {
             localStorage.removeItem('dulzura_user');
             State.currentUser = null;
-            UI.showToast('Sesión cerrada correctamente', 'info');
+            UI.showToast('Sesión cerrada correctamente 👋', 'info');
             setTimeout(() => window.location.href = 'index.html', 800);
-        },
+        }
 
-        bindEvents: () => {
+        static bindEvents() {
             document.getElementById('btnOpenLogin')?.addEventListener('click', () => document.getElementById('authModal').classList.add('open'));
-            document.getElementById('btnLogout')?.addEventListener('click', AuthController.logout);
-            document.getElementById('formLogin')?.addEventListener('submit', AuthController.login);
-            document.getElementById('formRegister')?.addEventListener('submit', AuthController.register);
+            document.getElementById('btnLogout')?.addEventListener('click', () => this.logout());
             
-            // Pestañas Login/Registro
+            document.getElementById('formLogin')?.addEventListener('submit', (e) => this.login(e));
+            document.getElementById('formRegister')?.addEventListener('submit', (e) => this.register(e));
+            
+            // Lógica de pestañas Login/Registro
             const tabLogin = document.getElementById('tabLogin');
             const tabRegister = document.getElementById('tabRegister');
             
-            tabLogin?.addEventListener('click', () => {
-                tabLogin.classList.add('active'); tabRegister.classList.remove('active');
-                document.getElementById('formLogin').style.display = 'block';
-                document.getElementById('formRegister').style.display = 'none';
-            });
+            if (tabLogin && tabRegister) {
+                tabLogin.addEventListener('click', () => {
+                    tabLogin.classList.add('active'); 
+                    tabRegister.classList.remove('active');
+                    document.getElementById('formLogin').style.display = 'flex';
+                    document.getElementById('formRegister').style.display = 'none';
+                    document.getElementById('regError').style.display = 'none';
+                    document.getElementById('loginError').style.display = 'none';
+                });
 
-            tabRegister?.addEventListener('click', () => {
-                tabRegister.classList.add('active'); tabLogin.classList.remove('active');
-                document.getElementById('formRegister').style.display = 'block';
-                document.getElementById('formLogin').style.display = 'none';
-            });
+                tabRegister.addEventListener('click', () => {
+                    tabRegister.classList.add('active'); 
+                    tabLogin.classList.remove('active');
+                    document.getElementById('formRegister').style.display = 'flex';
+                    document.getElementById('formLogin').style.display = 'none';
+                    document.getElementById('regError').style.display = 'none';
+                    document.getElementById('loginError').style.display = 'none';
+                });
+            }
         }
-    };
+    }
 
-    // Inicializar el módulo
+    // Arrancamos el controlador de sesiones
     AuthController.init();
 });

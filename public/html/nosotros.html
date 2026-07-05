@@ -10,7 +10,7 @@
 </head>
 <body>
 
-  <!-- HEADER UNIVERSAL ACTUALIZADO -->
+  <!-- HEADER UNIVERSAL -->
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="index.html">
@@ -24,18 +24,14 @@
         <a href="contacto.html">Contacto</a>
       </nav>
       <div class="header-actions">
-        <!-- UI cuando NO hay sesión -->
         <div id="ui-guest" style="display: flex; gap: 10px; align-items: center;">
           <button id="btnOpenLogin" class="btn-pill btn-pill-ghost d-none d-md-inline-flex"><i class="bi bi-person"></i> Ingresar</button>
           <a href="pedir.html" class="btn-pill btn-pill-solid">Pedir ahora</a>
         </div>
-        
-        <!-- UI cuando SÍ hay sesión -->
         <div id="ui-logged" style="display: none; gap: 15px; align-items: center;">
           <span id="userNameDisplay" style="font-weight: 600; font-size: 0.95rem; color: var(--berry);"></span>
           <button id="btnLogout" class="icon-btn" title="Cerrar sesión" style="width: 36px; height: 36px;"><i class="bi bi-box-arrow-right"></i></button>
         </div>
-
         <button id="btnMenu" class="burger" aria-label="Abrir menú" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
@@ -45,22 +41,45 @@
 
   <!-- CONTENIDO: NOSOTROS -->
   <section class="section">
-    <div class="section-inner two-col">
+    <div class="section-inner two-col" style="align-items: center;">
+      
       <div class="col-copy reveal">
         <span class="tag-label">Nuestra historia</span>
         <h2>Una cocina de barrio, un feed lleno de dulzura.</h2>
-        <p>Nacimos de una cocina familiar y hoy llegamos a tu mesa. Cada torta se prepara fresca, en pequeños lotes.</p>
-        <ul class="check-list">
+        <p>Nacimos de una cocina familiar y hoy llegamos a tu mesa. Cada torta se prepara fresca, en pequeños lotes, para garantizar que recibas el producto perfecto.</p>
+        <ul class="check-list mt-4">
           <li><i class="bi bi-check-circle-fill"></i> Ingredientes frescos y de temporada</li>
           <li><i class="bi bi-check-circle-fill"></i> Recetas caseras, sin conservantes</li>
         </ul>
       </div>
+
       <div class="col-visual reveal">
-        <div class="polaroid-stack">
-          <div class="polaroid p1"><i class="bi bi-cake2-fill"></i></div>
-          <div class="polaroid p2"><i class="bi bi-cookie"></i></div>
+        <!-- GALERÍA POLAROID: Agrega cuantas fotos quieras copiando el bloque -->
+        <div class="polaroid-gallery">
+          
+          <!-- Foto 1 -->
+          <div class="polaroid-item">
+            <img src="../img/pasteleros.jpg" alt="Nuestro equipo">
+            <div class="polaroid-text">El Equipo</div>
+          </div>
+
+          <!-- Foto 2 -->
+          <div class="polaroid-item">
+            <img src="../img/negocio.jpg" alt="Nuestro local">
+            <div class="polaroid-text">Nuestro Local</div>
+          </div>  
+
+          <!-- Ejemplo: Foto 3 (Para activarla, quita los guiones de los extremos) -->
+          <!--
+          <div class="polaroid-item">
+            <img src="../img/tu_nueva_foto.jpg" alt="Otra foto">
+            <div class="polaroid-text">Texto Foto 3</div>
+          </div>
+          -->
+
         </div>
       </div>
+
     </div>
   </section>
 
@@ -75,23 +94,18 @@
     </div>
   </footer>
 
-  <!-- SISTEMA ADMIN UNIVERSAL -->
+  <!-- MODALES DE AUTENTICACIÓN Y ADMIN -->
   <button id="btnGlobalAdmin" class="icon-btn" style="position: fixed; bottom: 24px; left: 24px; z-index: 90; box-shadow: var(--shadow-lift); display: none;">
     <i class="bi bi-gear-fill"></i>
   </button>
 
-  <!-- Modal 1: Login y Registro -->
   <div class="modal-overlay" id="authModal">
     <div class="modal-box" style="max-width: 420px; padding: 30px;">
       <button class="modal-close" id="btnCloseAuth"><i class="bi bi-x-lg"></i></button>
-      
-      <!-- Pestañas -->
       <div style="display: flex; gap: 10px; margin-bottom: 24px;">
         <button id="tabLogin" class="filter-chip active" style="flex: 1; text-align: center;">Iniciar Sesión</button>
         <button id="tabRegister" class="filter-chip" style="flex: 1; text-align: center;">Crear Cuenta</button>
       </div>
-
-      <!-- Formulario de Login -->
       <form id="formLogin" class="contact-form">
         <div class="form-row">
           <label>Correo electrónico</label>
@@ -104,8 +118,6 @@
         <p id="loginError" style="color: var(--berry); font-size: 0.85rem; display: none; margin: 5px 0 0;">Credenciales incorrectas.</p>
         <button type="submit" class="btn-pill btn-pill-solid" style="width: 100%; margin-top: 15px;">Ingresar</button>
       </form>
-
-      <!-- Formulario de Registro (Oculto por defecto) -->
       <form id="formRegister" class="contact-form" style="display: none;">
         <div class="form-row">
           <label>Nombre completo</label>
@@ -129,7 +141,6 @@
     </div>
   </div>
 
-  <!-- Modal 2: Panel de Administración -->
   <div class="modal-overlay" id="adminModal">
     <div class="modal-box">
       <button class="modal-close" id="btnCloseAdmin"><i class="bi bi-x-lg"></i></button>

@@ -34,14 +34,52 @@ const injectCuteAnimations = () => {
             80% { transform: scale(1); }
         }
         
-        /* Aplicando las animaciones */
+        /* ESTILOS TIPO POLAROID (NUEVO) */
+        .polaroid-card {
+            background: white;
+            padding: 12px 12px 20px 12px;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1), 0 6px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .polaroid-card:nth-child(even) { transform: rotate(2deg); }
+        .polaroid-card:nth-child(odd) { transform: rotate(-2deg); }
+        .polaroid-card:hover { 
+            transform: scale(1.05) rotate(0deg); 
+            z-index: 10;
+        }
+        .polaroid-img-wrapper {
+            width: 100%;
+            aspect-ratio: 1/1;
+            overflow: hidden;
+            background: #f4f4f4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .polaroid-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .polaroid-title {
+            font-family: 'Fraunces', serif; /* Tu fuente elegante */
+            font-size: 1.2rem;
+            color: #333;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        /* Aplicando las animaciones previas */
         .modal-box { 
             animation: popKiut 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important; 
             border: 3px solid var(--paper) !important;
         }
-        .menu-card {
-            transition: all 0.3s ease;
-        }
+        .menu-card { transition: all 0.3s ease; }
         .menu-card:hover { 
             animation: floatCute 2.5s ease-in-out infinite; 
             border-color: #ffb6c1 !important; 
@@ -52,16 +90,10 @@ const injectCuteAnimations = () => {
             background: linear-gradient(135deg, var(--berry), #ff769b) !important;
             border: none;
         }
-        .bi-person-heart, .toast-icon { 
-            animation: pulseHeart 2s infinite; 
-        }
-        .admin-list-item {
-            transition: transform 0.2s ease;
-        }
+        .bi-person-heart, .toast-icon { animation: pulseHeart 2s infinite; }
+        .admin-list-item { transition: transform 0.2s ease; }
         .admin-list-item:hover {
-            transform: scale(1.02);
-            background-color: #fff9fa;
-            border-left: 4px solid #ffb6c1;
+            transform: scale(1.02); background-color: #fff9fa; border-left: 4px solid #ffb6c1;
         }
     `;
     document.head.appendChild(style);
@@ -164,13 +196,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 const res = await fetch(`${CONFIG.API_URL}/productos`);
                 if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
                 State.productos = await res.json();
-                this.renderMenu();
+                
+                this.renderMenu();          // Renderiza el menu.html
+                this.renderFeatured();      // NUEVO: Renderiza el index.html
                 AdminController.renderAdminList();
             } catch (error) {
                 UIManager.showToast('Oops! No pudimos conectar con los postres 🍰', 'error');
             }
         }
 
+        // Renderiza TODOS los productos en la pestaña Menú
         static renderMenu() {
             const grid = document.getElementById('menuGrid');
             const empty = document.getElementById('menuEmpty');
@@ -210,6 +245,39 @@ document.addEventListener('DOMContentLoaded', () => {
             grid.appendChild(fragment);
         }
 
+        // NUEVO: Renderiza SOLO los 3 últimos productos en el Inicio (index.html) estilo Polaroid
+        static renderFeatured() {
+            const featuredGrid = document.getElementById('featuredGrid');
+            if (!featuredGrid) return; // Si no estamos en el index, no hace nada.
+
+            while (featuredGrid.firstChild) {
+                featuredGrid.removeChild(featuredGrid.firstChild);
+            }
+
+            // Tomamos solo los 3 últimos productos añadidos a la base de datos
+            const destacados = State.productos.slice(-3).reverse(); 
+            const fragment = document.createDocumentFragment();
+
+            destacados.forEach(p => {
+                const card = document.createElement('article');
+                // Asignamos la nueva clase Polaroid
+                card.className = 'polaroid-card reveal in-view';
+                
+                const iconOrImage = p.imagen 
+                    ? `<img src="${p.imagen}" loading="lazy">` 
+                    : `<i class="bi ${CONFIG.ICONS[p.categoria] || 'bi-cake2'} fs-1" style="color: #ccc;"></i>`;
+
+                // Solo la imagen y el nombre
+                card.innerHTML = `
+                    <div class="polaroid-img-wrapper">${iconOrImage}</div>
+                    <h3 class="polaroid-title">${UIManager.escapeHtml(p.nombre)}</h3>
+                `;
+                fragment.appendChild(card);
+            });
+
+            featuredGrid.appendChild(fragment);
+        }
+
         static bindEvents() {
             document.querySelectorAll('.filter-chip[data-filter]').forEach(chip => {
                 chip.addEventListener('click', (e) => {
@@ -221,30 +289,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
-
-    window.abrirDetalle = (id) => {
-        const producto = State.productos.find(p => p.id === id);
-        const modal = document.getElementById('productModal');
-        if (!producto || !modal) return;
-
-        document.getElementById('productModalName').textContent = producto.nombre;
-        document.getElementById('productModalPrice').textContent = `$${producto.precio}`;
-        document.getElementById('productModalDesc').textContent = producto.descripcion;
-
-        const img = document.getElementById('productModalImage');
-        if (producto.imagen) { 
-            img.src = producto.imagen; 
-            img.style.display = 'block'; 
-        } else { 
-            img.style.display = 'none'; 
-        }
-
-        const btn = document.getElementById('productModalOrder');
-        const msj = encodeURIComponent(`¡Hola! Me encantaría pedir este producto súper kiut: *${producto.nombre}* 🍰✨`);
-        btn.href = `https://wa.me/${CONFIG.PHONE_NUMBER}?text=${msj}`;
-
-        modal.classList.add('open');
-    };
 
     /* ==========================================================
        5. CONTROLADOR DEL PANEL DE ADMINISTRADOR (ADMIN)
