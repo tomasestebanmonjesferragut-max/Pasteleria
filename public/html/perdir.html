@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedir | Dulzura en tu Hogar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+  <!-- HEADER UNIVERSAL -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-badge"><i class="bi bi-cake2-fill"></i></span>
+        <span class="brand-text">Dulzura <em>en tu Hogar</em></span>
+      </a>
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html">Inicio</a>
+        <a href="menu.html">Menú</a>
+        <a href="nosotros.html">Nosotros</a>
+        <a href="contacto.html">Contacto</a>
+      </nav>
+      <div class="header-actions">
+        <a href="pedir.html" class="btn-pill btn-pill-solid d-none d-md-inline-flex">Pedir ahora</a>
+        <button id="btnMenu" class="burger" aria-label="Abrir menú" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO: PEDIR -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <span class="tag-label">Haz tu pedido</span>
+        <h2>¿Qué se te antoja hoy?</h2>
+      </div>
+      <div style="max-width: 680px; margin: 0 auto; background: var(--paper); padding: 40px; border-radius: var(--radius-box); border: 1px solid var(--line);">
+        <form class="contact-form" id="orderForm">
+          <div class="form-row">
+            <label>Nombre completo</label>
+            <input type="text" id="pedidoNombre" required>
+          </div>
+          <div class="form-row">
+            <label>Producto a pedir</label>
+            <select id="pedidoProducto" required>
+              <option value="Torta">Torta personalizada</option>
+              <option value="Cupcakes">Caja de Cupcakes</option>
+              <option value="Alfajores">Caja de Alfajores</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Detalles extras</label>
+            <textarea id="pedidoDetalles" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn-pill btn-pill-solid" style="width: 100%;">Enviar pedido a WhatsApp</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER UNIVERSAL -->
+  <footer class="site-footer">
+    <div class="section-inner footer-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-badge"><i class="bi bi-cake2-fill"></i></span>
+        <span class="brand-text">Dulzura <em>en tu Hogar</em></span>
+      </a>
+      <p class="footer-note">© 2026 Dulzura en tu Hogar</p>
+    </div>
+  </footer>
+
+  <!-- SISTEMA ADMIN UNIVERSAL -->
+  <button id="btnGlobalAdmin" class="icon-btn" style="position: fixed; bottom: 24px; left: 24px; z-index: 90; box-shadow: var(--shadow-lift);">
+    <i class="bi bi-gear-fill"></i>
+  </button>
+
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-box password-box" style="text-align: center; max-width: 400px;">
+      <button class="modal-close" id="btnCloseAuth"><i class="bi bi-x-lg"></i></button>
+      <h2>Acceso Restringido</h2>
+      <p class="modal-sub">Ingresa la contraseña de administrador</p>
+      <input type="password" id="adminPasswordInput" class="contact-form" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); margin-bottom: 15px; text-align: center; letter-spacing: 2px;" placeholder="••••••••">
+      <p id="authError" style="color: var(--berry); font-size: 0.85rem; display: none; margin-bottom: 15px;">Contraseña incorrecta.</p>
+      <button id="btnVerifyAuth" class="btn-pill btn-pill-solid" style="width: 100%;">Ingresar</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="adminModal">
+    <div class="modal-box">
+      <button class="modal-close" id="btnCloseAdmin"><i class="bi bi-x-lg"></i></button>
+      <h2>Panel de Control</h2>
+      <p class="modal-sub">Modifica el catálogo en tiempo real.</p>
+      <form id="formAdminProducto" class="contact-form">
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label>Nombre del producto</label>
+            <input type="text" id="adminNombre" required>
+          </div>
+          <div class="form-row">
+            <label>Categoría</label>
+            <select id="adminCategoria" required>
+              <option value="tortas">Tortas</option>
+              <option value="cupcakes">Cupcakes</option>
+              <option value="alfajores">Alfajores</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Precio</label>
+          <input type="text" id="adminPrecio" required>
+        </div>
+        <div class="form-row">
+          <label>Descripción</label>
+          <textarea id="adminDesc" rows="2" required></textarea>
+        </div>
+        <div class="form-row">
+          <label>Imagen</label>
+          <div class="dropzone" id="dropzoneImage">
+            <i class="bi bi-cloud-arrow-up-fill"></i>
+            <span>Haz clic para subir foto</span>
+            <input type="file" id="adminImagen" accept="image/*" style="display: none;">
+            <img id="previewImagen" style="display: none; width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-top: 10px;">
+          </div>
+        </div>
+        <button type="submit" class="btn-pill btn-pill-solid mt-4" style="width: 100%;">Guardar Producto</button>
+      </form>
+      <hr class="modal-divider">
+      <div class="admin-list-head"><h4>Catálogo actual</h4></div>
+      <div class="admin-list" id="adminList"></div>
+    </div>
+  </div>
+
+  <script src="../js/script.js"></script>
+</body>
+</html>
