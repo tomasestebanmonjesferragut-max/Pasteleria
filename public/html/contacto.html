@@ -10,7 +10,7 @@
 </head>
 <body>
 
-  <!-- HEADER UNIVERSAL -->
+  <!-- HEADER UNIVERSAL ACTUALIZADO -->
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="index.html">
@@ -24,7 +24,18 @@
         <a href="contacto.html">Contacto</a>
       </nav>
       <div class="header-actions">
-        <a href="pedir.html" class="btn-pill btn-pill-solid d-none d-md-inline-flex">Pedir ahora</a>
+        <!-- UI cuando NO hay sesión -->
+        <div id="ui-guest" style="display: flex; gap: 10px; align-items: center;">
+          <button id="btnOpenLogin" class="btn-pill btn-pill-ghost d-none d-md-inline-flex"><i class="bi bi-person"></i> Ingresar</button>
+          <a href="pedir.html" class="btn-pill btn-pill-solid">Pedir ahora</a>
+        </div>
+        
+        <!-- UI cuando SÍ hay sesión -->
+        <div id="ui-logged" style="display: none; gap: 15px; align-items: center;">
+          <span id="userNameDisplay" style="font-weight: 600; font-size: 0.95rem; color: var(--berry);"></span>
+          <button id="btnLogout" class="icon-btn" title="Cerrar sesión" style="width: 36px; height: 36px;"><i class="bi bi-box-arrow-right"></i></button>
+        </div>
+
         <button id="btnMenu" class="burger" aria-label="Abrir menú" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
@@ -72,21 +83,60 @@
   </footer>
 
   <!-- SISTEMA ADMIN UNIVERSAL -->
-  <button id="btnGlobalAdmin" class="icon-btn" style="position: fixed; bottom: 24px; left: 24px; z-index: 90; box-shadow: var(--shadow-lift);">
+  <button id="btnGlobalAdmin" class="icon-btn" style="position: fixed; bottom: 24px; left: 24px; z-index: 90; box-shadow: var(--shadow-lift); display: none;">
     <i class="bi bi-gear-fill"></i>
   </button>
 
+  <!-- Modal 1: Login y Registro -->
   <div class="modal-overlay" id="authModal">
-    <div class="modal-box password-box" style="text-align: center; max-width: 400px;">
+    <div class="modal-box" style="max-width: 420px; padding: 30px;">
       <button class="modal-close" id="btnCloseAuth"><i class="bi bi-x-lg"></i></button>
-      <h2>Acceso Restringido</h2>
-      <p class="modal-sub">Ingresa la contraseña de administrador</p>
-      <input type="password" id="adminPasswordInput" class="contact-form" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); margin-bottom: 15px; text-align: center; letter-spacing: 2px;" placeholder="••••••••">
-      <p id="authError" style="color: var(--berry); font-size: 0.85rem; display: none; margin-bottom: 15px;">Contraseña incorrecta.</p>
-      <button id="btnVerifyAuth" class="btn-pill btn-pill-solid" style="width: 100%;">Ingresar</button>
+      
+      <!-- Pestañas -->
+      <div style="display: flex; gap: 10px; margin-bottom: 24px;">
+        <button id="tabLogin" class="filter-chip active" style="flex: 1; text-align: center;">Iniciar Sesión</button>
+        <button id="tabRegister" class="filter-chip" style="flex: 1; text-align: center;">Crear Cuenta</button>
+      </div>
+
+      <!-- Formulario de Login -->
+      <form id="formLogin" class="contact-form">
+        <div class="form-row">
+          <label>Correo electrónico</label>
+          <input type="email" id="loginCorreo" required>
+        </div>
+        <div class="form-row">
+          <label>Contraseña</label>
+          <input type="password" id="loginPassword" required>
+        </div>
+        <p id="loginError" style="color: var(--berry); font-size: 0.85rem; display: none; margin: 5px 0 0;">Credenciales incorrectas.</p>
+        <button type="submit" class="btn-pill btn-pill-solid" style="width: 100%; margin-top: 15px;">Ingresar</button>
+      </form>
+
+      <!-- Formulario de Registro (Oculto por defecto) -->
+      <form id="formRegister" class="contact-form" style="display: none;">
+        <div class="form-row">
+          <label>Nombre completo</label>
+          <input type="text" id="regNombre" required>
+        </div>
+        <div class="form-row">
+          <label>Teléfono (WhatsApp)</label>
+          <input type="tel" id="regTelefono" required>
+        </div>
+        <div class="form-row">
+          <label>Correo electrónico</label>
+          <input type="email" id="regCorreo" required>
+        </div>
+        <div class="form-row">
+          <label>Contraseña</label>
+          <input type="password" id="regPassword" required>
+        </div>
+        <p id="regError" style="color: var(--berry); font-size: 0.85rem; display: none; margin: 5px 0 0;"></p>
+        <button type="submit" class="btn-pill btn-pill-solid" style="width: 100%; margin-top: 15px;">Registrarme</button>
+      </form>
     </div>
   </div>
 
+  <!-- Modal 2: Panel de Administración -->
   <div class="modal-overlay" id="adminModal">
     <div class="modal-box">
       <button class="modal-close" id="btnCloseAdmin"><i class="bi bi-x-lg"></i></button>
@@ -132,6 +182,7 @@
     </div>
   </div>
 
-  <script src="../js/script.js"></script>
+  <script src="../js/Script.js"></script>
+  <script src="../js/login.js"></script>
 </body>
 </html>

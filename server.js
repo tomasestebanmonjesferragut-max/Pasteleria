@@ -1,13 +1,15 @@
 // ============================================================
-// DULZURA EN TU HOGAR — Servidor Backend (Node.js + MySQL)
+// DULZURA EN TU HOGAR — Servidor Backend Principal
 // ============================================================
 
 const express = require('express');
 const multer = require('multer');
-const mysql = require('mysql2');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+
+// Importamos la conexión a la base de datos desde db.js
+const db = require('./db'); 
 
 const app = express();
 const PORT = 3000;
@@ -41,41 +43,39 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// 3. CONFIGURACIÓN DE MYSQL
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'dulzura_db' // CORREGIDO: Eliminado el punto extra
-});
+/* ==========================================================
+   RUTAS DE AUTENTICACIÓN (LOGIN Y REGISTRO)
+   ========================================================== */
 
-db.connect((err) => {
-    if (err) {
-        console.error('Error conectando a MySQL:', err.message);
-        return;
-    }
-    console.log('Conectado exitosamente a la base de datos MySQL (dulzura_db).');
-
-    // CORREGIDO: Sintaxis completa de la tabla
-    const createTableQuery = `
-        CREATE TABLE IF NOT EXISTS productos (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            nombre VARCHAR(255) NOT NULL,
-            categoria VARCHAR(255) NOT NULL,
-            precio VARCHAR(255) NOT NULL,
-            descripcion TEXT,
-            imagen VARCHAR(255)
-        )
-    `;
+// Registrar nuevo cliente
+app.post('/api/register', (req, res) => {
+    const { nombre, telefono, correo, password } = req.body;
+    const sql = "INSERT INTO usuarios (rol, nombre, telefono, correo, password) VALUES ('cliente', ?, ?, ?, ?)";
     
-    db.query(createTableQuery, (err, result) => {
-        if (err) console.error('Error creando la tabla:', err.message);
+    db.query(sql, [nombre, telefono, correo, password], function(err, result) {
+        if (err) {
+            if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: "El correo ya está registrado" });
+            return res.status(500).json({ error: err.message });
+        }
+        res.json({ id: result.insertId, rol: 'cliente', nombre, telefono, correo });
     });
 });
 
-/* ==========================================================
-   RUTAS DE LA API
-   ========================================================== */
+// Iniciar sesión
+app.post('/api/login', (req, res) => {
+    const { correo, password } = req.body;
+    const sql = "SELECT id, rol, nombre, telefono, correo FROM usuarios WHERE correo = ? AND password = ?";
+    
+    db.query(sql, [correo, password], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        
+        if (results.length > 0) {
+            res.json(results[0]);
+        } else {
+            res.status(401).json({ error: "Credenciales incorrectas" });
+        }
+    });
+});
 
 app.get('/api/productos', (req, res) => {
     db.query("SELECT * FROM productos", (err, results) => {
@@ -95,6 +95,29 @@ app.post('/api/productos', upload.single('imagen'), (req, res) => {
     });
 });
 
+// Actualizar producto existente (NUEVO)
+app.put('/api/productos/:id', upload.single('imagen'), (req, res) => {
+    const { nombre, categoria, precio, descripcion } = req.body;
+    const id = req.params.id;
+    
+    // Si el usuario subió una nueva imagen, actualizamos todo
+    if (req.file) {
+        const imagenUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`;
+        const sql = 'UPDATE productos SET nombre=?, categoria=?, precio=?, descripcion=?, imagen=? WHERE id=?';
+        db.query(sql, [nombre, categoria, precio, descripcion, imagenUrl, id], (err) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ message: "Producto actualizado con nueva imagen", id });
+        });
+    } else {
+        // Si no subió imagen, mantenemos la imagen anterior y actualizamos solo los textos
+        const sql = 'UPDATE productos SET nombre=?, categoria=?, precio=?, descripcion=? WHERE id=?';
+        db.query(sql, [nombre, categoria, precio, descripcion, id], (err) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ message: "Producto actualizado sin cambiar imagen", id });
+        });
+    }
+});
+
 app.delete('/api/productos/:id', (req, res) => {
     const id = req.params.id;
     db.query('DELETE FROM productos WHERE id = ?', [id], function(err, result) {
@@ -103,6 +126,7 @@ app.delete('/api/productos/:id', (req, res) => {
     });
 });
 
+// 3. INICIAR EL SERVIDOR
 app.listen(PORT, () => {
     console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
 });
