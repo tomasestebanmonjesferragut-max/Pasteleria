@@ -185,3 +185,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Arrancamos el controlador de sesiones
     AuthController.init();
 });
+
+

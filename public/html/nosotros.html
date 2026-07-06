@@ -141,61 +141,94 @@
     </div>
   </div>
 
+<!-- Modal 2: Panel de Administración ACTUALIZADO -->
   <div class="modal-overlay" id="adminModal">
     <div class="modal-box">
       <button class="modal-close" id="btnCloseAdmin"><i class="bi bi-x-lg"></i></button>
       <h2>Panel de Control</h2>
-      <p class="modal-sub">Modifica el catálogo en tiempo real.</p>
-      <form id="formAdminProducto" class="contact-form">
-        <div class="form-grid-2">
-          <div class="form-row">
-            <label>Nombre del producto</label>
-            <input type="text" id="adminNombre" required>
+      
+      <!-- PESTAÑAS DEL ADMIN -->
+      <div style="display: flex; gap: 10px; margin-bottom: 24px;">
+        <button id="tabAdminProductos" class="filter-chip active" style="flex: 1; text-align: center;">Catálogo</button>
+        <button id="tabAdminMensajes" class="filter-chip" style="flex: 1; text-align: center;">Mensajes</button>
+      </div>
+
+      <!-- VISTA 1: PRODUCTOS (El formulario y lista original) -->
+      <div id="adminViewProductos">
+        <p class="modal-sub">Modifica el catálogo en tiempo real.</p>
+        <form id="formAdminProducto" class="contact-form">
+          <div class="form-grid-2">
+            <div class="form-row">
+              <label>Nombre del producto</label>
+              <input type="text" id="adminNombre" required>
+            </div>
+            <div class="form-row">
+              <label>Categoría</label>
+              <select id="adminCategoria" required>
+                <option value="tortas">Tortas</option>
+                <option value="cupcakes">Cupcakes</option>
+                <option value="alfajores">Alfajores</option>
+              </select>
+            </div>
           </div>
           <div class="form-row">
-            <label>Categoría</label>
-            <select id="adminCategoria" required>
-              <option value="tortas">Tortas</option>
-              <option value="cupcakes">Cupcakes</option>
-              <option value="alfajores">Alfajores</option>
-            </select>
+            <label>Precio</label>
+            <input type="text" id="adminPrecio" required>
           </div>
-        </div>
-        <div class="form-row">
-          <label>Precio</label>
-          <input type="text" id="adminPrecio" required>
-        </div>
-        <div class="form-row">
-          <label>Descripción</label>
-          <textarea id="adminDesc" rows="2" required></textarea>
-        </div>
-        <div class="form-row">
-          <label>Imagen</label>
-          <div class="dropzone" id="dropzoneImage">
-            <i class="bi bi-cloud-arrow-up-fill"></i>
-            <span>Haz clic para subir foto</span>
-            <input type="file" id="adminImagen" accept="image/*" style="display: none;">
-            <img id="previewImagen" style="display: none; width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-top: 10px;">
+          <div class="form-row">
+            <label>Descripción</label>
+            <textarea id="adminDesc" rows="2" required></textarea>
           </div>
+          <div class="form-row">
+            <label>Imagen</label>
+            <div class="dropzone" id="dropzoneImage">
+              <i class="bi bi-cloud-arrow-up-fill"></i>
+              <span>Haz clic para subir foto</span>
+              <input type="file" id="adminImagen" accept="image/*" style="display: none;">
+              <img id="previewImagen" style="display: none; width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-top: 10px;">
+            </div>
+          </div>
+          <button type="submit" class="btn-pill btn-pill-solid mt-4" style="width: 100%;">Guardar Producto</button>
+        </form>
+        <hr class="modal-divider">
+        <div class="admin-list-head"><h4>Catálogo actual</h4></div>
+        <div class="admin-list" id="adminList"></div>
+      </div>
+
+      <!-- VISTA 2: MENSAJES (NUEVO) -->
+      <div id="adminViewMensajes" style="display: none;">
+        <p class="modal-sub">Bandeja de entrada de clientes.</p>
+        <div class="admin-list" id="adminMessagesList">
+          <!-- Aquí se inyectarán los mensajes mágicamente -->
         </div>
-        <button type="submit" class="btn-pill btn-pill-solid mt-4" style="width: 100%;">Guardar Producto</button>
-      </form>
-      <hr class="modal-divider">
-      <div class="admin-list-head"><h4>Catálogo actual</h4></div>
-      <div class="admin-list" id="adminList"></div>
+      </div>
     </div>
   </div>
 
-  <!-- 1. El cerebro: Configuración y UI -->
+  <!-- Modal 3: Detalles del Producto -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal-box" style="text-align: center; max-width: 450px; padding: 24px;">
+      <button class="modal-close" id="btnCloseProduct"><i class="bi bi-x-lg"></i></button>
+      
+      <!-- Imagen en grande -->
+      <img id="productModalImage" src="" alt="Vista previa del producto" style="width: 100%; max-height: 320px; object-fit: cover; border-radius: 16px; margin-bottom: 18px; box-shadow: var(--shadow-soft); display: none;">
+      
+      <!-- Detalles -->
+      <h2 id="productModalName" style="font-size: 1.6rem; margin-bottom: 6px;"></h2>
+      <p id="productModalPrice" style="color: var(--berry); font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; margin-bottom: 12px;"></p>
+      <p id="productModalDesc" style="color: var(--choco-soft); font-size: 0.95rem; margin-bottom: 24px; line-height: 1.5;"></p>
+      
+      <!-- Botón de acción directo -->
+      <a id="productModalOrder" href="#" target="_blank" class="btn-pill btn-pill-solid" style="width: 100%; padding: 1rem;">
+        <i class="bi bi-whatsapp me-2"></i> Pedir este producto
+      </a>
+    </div>
+  </div>
+  
+  <!-- AQUÍ ESTÁN LOS 4 SCRIPTS EN EL ORDEN PERFECTO -->
   <script src="../js/core.js"></script>
-
-  <!-- 2. La lógica de sesiones y usuarios -->
   <script src="../js/login.js"></script>
-
-  <!-- 3. Los productos y el catálogo -->
   <script src="../js/menu.js"></script>
-
-  <!-- 4. La administración y eventos finales -->
   <script src="../js/admin.js"></script>
 </body>
 </html>

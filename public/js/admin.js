@@ -7,7 +7,6 @@
 'use strict';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Importamos las configuraciones y herramientas visuales desde core.js
     const { CONFIG, State, UI } = window.Dulzura;
 
     /* ==========================================================
@@ -18,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.bindEvents();
         }
 
+        // --- PESTAÑA 1: CATÁLOGO ---
         static renderAdminList() {
             const adminList = document.getElementById('adminList');
             if (!adminList) return;
@@ -40,9 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span style="font-size:0.85rem; color:#666;">$${UI.escapeHtml(p.precio)}</span>
                     </div>
                     <div class="admin-list-btns" style="display:flex; gap:5px;">
-                        <!-- BOTÓN DE EDITAR -->
                         <button class="btn-icon" onclick="window.editarProducto(${p.id})" title="Editar" style="background:#ffeaa7; color:#d35400; border:none; padding:8px; border-radius:8px; cursor:pointer;"><i class="bi bi-pencil-fill"></i></button>
-                        <!-- BOTÓN DE BORRAR -->
                         <button class="danger btn-icon" onclick="window.eliminarProducto(${p.id})" title="Eliminar" style="background:#ff769b; color:white; border:none; padding:8px; border-radius:8px; cursor:pointer;"><i class="bi bi-trash-fill"></i></button>
                     </div>
                 `;
@@ -64,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
             btnSubmit.disabled = true;
             btnSubmit.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Horneando... ✨';
 
-            // Verificamos si estamos EDITANDO o CREANDO
             const editId = form.dataset.editId;
             const method = editId ? 'PUT' : 'POST';
             const endpoint = editId ? `${CONFIG.API_URL}/productos/${editId}` : `${CONFIG.API_URL}/productos`;
@@ -80,12 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const res = await fetch(endpoint, { method: method, body: formData });
                 if (!res.ok) throw new Error('No pudimos guardar los cambios.');
 
-                // Refrescamos el catálogo global (depende de menu.js)
-                if (window.MenuController) {
-                    await window.MenuController.fetchProducts(); 
-                }
+                if (window.MenuController) await window.MenuController.fetchProducts(); 
                 
-                // Reset de Interfaz
                 AdminController.resetFormMode(form);
                 UI.showToast(editId ? '¡Producto actualizado precioso! ✨' : '¡Nuevo producto listo! 🍰');
 
@@ -99,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         static resetFormMode(form) {
             form.reset();
-            delete form.dataset.editId; // Quitamos el modo edición
+            delete form.dataset.editId; 
             form.querySelector('button[type="submit"]').innerHTML = 'Guardar Producto';
             
             const preview = document.getElementById('previewImagen');
@@ -112,7 +105,72 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // --- PESTAÑA 2: MENSAJES (CONECTADO A LA BASE DE DATOS) ---
+        static async renderAdminMessages() {
+            const list = document.getElementById('adminMessagesList');
+            if (!list) return;
+            
+            list.innerHTML = '<p style="text-align:center;">Cargando mensajes...</p>';
+            
+            try {
+                const res = await fetch(`${CONFIG.API_URL}/mensajes`);
+                const mensajes = await res.json();
+                list.innerHTML = '';
+
+                if (mensajes.length === 0) {
+                    list.innerHTML = '<p style="text-align:center; color:#999;">No hay mensajes nuevos.</p>';
+                    return;
+                }
+
+                mensajes.reverse().forEach(m => {
+                    const item = document.createElement('div');
+                    item.className = 'message-card'; // Clase profesional
+                    
+                    item.innerHTML = `
+                        <div style="font-size: 1.4rem; color: var(--berry); margin-top: 2px;"><i class="bi bi-envelope-heart-fill"></i></div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="message-sender">${UI.escapeHtml(m.nombre)}</span>
+                                <span class="message-date">${new Date(m.fecha).toLocaleString()}</span>
+                            </div>
+                            <p class="message-text">${UI.escapeHtml(m.mensaje)}</p>
+                        </div>
+                        <button class="message-delete-btn" onclick="window.eliminarMensaje(${m.id})" title="Eliminar">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    `;
+                    list.appendChild(item);
+                });
+            } catch (err) {
+                list.innerHTML = '<p style="color:red; text-align:center;">Error al cargar.</p>';
+            }
+        }
+
         static bindEvents() {
+            // LÓGICA DE INTERCAMBIO DE PESTAÑAS (TABS)
+            const tabProductos = document.getElementById('tabAdminProductos');
+            const tabMensajes = document.getElementById('tabAdminMensajes');
+            const viewProductos = document.getElementById('adminViewProductos');
+            const viewMensajes = document.getElementById('adminViewMensajes');
+
+            if (tabProductos && tabMensajes && viewProductos && viewMensajes) {
+                tabProductos.addEventListener('click', () => {
+                    tabProductos.classList.add('active'); 
+                    tabMensajes.classList.remove('active');
+                    viewProductos.style.display = 'block'; 
+                    viewMensajes.style.display = 'none';
+                });
+                
+                tabMensajes.addEventListener('click', () => {
+                    tabMensajes.classList.add('active'); 
+                    tabProductos.classList.remove('active');
+                    viewProductos.style.display = 'none'; 
+                    viewMensajes.style.display = 'block';
+                    AdminController.renderAdminMessages(); // Refresca los mensajes de la BD al abrir
+                });
+            }
+
+            // Lógica de imágenes del Catálogo
             const dropzone = document.getElementById('dropzoneImage');
             const inputImagen = document.getElementById('adminImagen');
             const previewImagen = document.getElementById('previewImagen');
@@ -135,23 +193,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             document.getElementById('formAdminProducto')?.addEventListener('submit', (e) => this.handleProductSubmit(e));
+            
+            // Al abrir el modal global desde el botón inferior, resetear el form
             document.getElementById('btnGlobalAdmin')?.addEventListener('click', () => {
-                AdminController.resetFormMode(document.getElementById('formAdminProducto'));
+                const formAdmin = document.getElementById('formAdminProducto');
+                if (formAdmin) AdminController.resetFormMode(formAdmin);
                 document.getElementById('adminModal')?.classList.add('open');
             });
         }
     }
 
-    // Exponemos AdminController de forma global para que menu.js pueda actualizar la lista[cite: 14]
     window.AdminController = AdminController;
 
-    // LÓGICA DE EDICIÓN: Rellena el formulario con los datos del producto seleccionado
+    // --- FUNCIONES GLOBALES PARA EL HTML ---
+
     window.editarProducto = (id) => {
         const producto = State.productos.find(p => p.id === id);
         if (!producto) return;
 
         const form = document.getElementById('formAdminProducto');
-        form.dataset.editId = producto.id; // Activamos el modo edición asignando el ID
+        form.dataset.editId = producto.id; 
         
         document.getElementById('adminNombre').value = producto.nombre;
         document.getElementById('adminCategoria').value = producto.categoria;
@@ -176,7 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
         form.querySelector('button[type="submit"]').innerHTML = '<i class="bi bi-stars"></i> Actualizar Producto ✨';
         UI.showToast('Modo edición activado ✏️', 'info');
         
-        // Hacer scroll automático hacia arriba donde está el formulario
         document.querySelector('.modal-box').scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -186,13 +246,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 const res = await fetch(`${CONFIG.API_URL}/productos/${id}`, { method: 'DELETE' });
                 if (!res.ok) throw new Error('Desincronización con el servidor.');
                 
-                if (window.MenuController) {
-                    await window.MenuController.fetchProducts();
-                }
+                if (window.MenuController) await window.MenuController.fetchProducts();
                 
                 UI.showToast('Borrado exitosamente 🧹');
             } catch (err) { 
                 UI.showToast(err.message, 'error'); 
+            }
+        }
+    };
+
+    // ELIMINAR MENSAJES DE LA BD
+    window.eliminarMensaje = async (id) => {
+        if(confirm('¿Eliminar este mensaje? 🗑️')) {
+            try {
+                const res = await fetch(`${CONFIG.API_URL}/mensajes/${id}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error('No se pudo borrar el mensaje del servidor.');
+                
+                AdminController.renderAdminMessages(); 
+                UI.showToast('Mensaje eliminado 🧹');
+            } catch (err) {
+                UI.showToast(err.message, 'error');
             }
         }
     };
@@ -202,6 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
        ========================================================== */
     class FormController {
         static init() {
+            // Lógica para enviar Pedidos por WhatsApp
             const orderForm = document.getElementById('orderForm');
             if (orderForm) {
                 orderForm.addEventListener('submit', (e) => {
@@ -218,6 +292,42 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     orderForm.reset();
                     UI.showToast('¡Llevándote a WhatsApp! 💖');
+                });
+            }
+
+            // ENVIAR DUDAS A LA BASE DE DATOS
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const btnSubmit = contactForm.querySelector('button[type="submit"]');
+                    const originalText = btnSubmit.innerHTML;
+                    btnSubmit.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Enviando...';
+                    btnSubmit.disabled = true;
+
+                    const payload = {
+                        nombre: document.getElementById('nombre').value,
+                        mensaje: document.getElementById('mensaje').value
+                    };
+
+                    try {
+                        const res = await fetch(`${CONFIG.API_URL}/mensajes`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!res.ok) throw new Error('Error al enviar a la base de datos.');
+
+                        UI.showToast('¡Mensaje enviado con éxito! 💌');
+                        contactForm.reset();
+                    } catch (err) {
+                        UI.showToast('Oops, no pudimos enviar tu mensaje 😿', 'error');
+                    } finally {
+                        btnSubmit.innerHTML = originalText;
+                        btnSubmit.disabled = false;
+                    }
                 });
             }
         }

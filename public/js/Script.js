@@ -2,7 +2,7 @@
  * @file Script.js
  * @description Motor Principal (Core Engine) para Dulzura en tu Hogar.
  * @author GhostDev
- * @version 4.0.0 (Edición habilitada + Animaciones Kiut ✨)
+ * @version 5.0.0 (Versión Unificada y Completa ✨)
  */
 
 'use strict';
@@ -13,19 +13,16 @@
 const injectCuteAnimations = () => {
     const style = document.createElement('style');
     style.innerHTML = `
-        /* Flotación suave y tierna */
         @keyframes floatCute {
             0% { transform: translateY(0px); }
             50% { transform: translateY(-8px); }
             100% { transform: translateY(0px); }
         }
-        /* Efecto de aparición tipo burbuja/pop */
         @keyframes popKiut {
             0% { transform: scale(0.7) translateY(20px); opacity: 0; }
             70% { transform: scale(1.03); opacity: 1; }
             100% { transform: scale(1) translateY(0); opacity: 1; }
         }
-        /* Latido dulce para iconos */
         @keyframes pulseHeart {
             0% { transform: scale(1); }
             20% { transform: scale(1.2); color: #ff769b; }
@@ -34,7 +31,7 @@ const injectCuteAnimations = () => {
             80% { transform: scale(1); }
         }
         
-        /* ESTILOS TIPO POLAROID (NUEVO) */
+        /* ESTILOS TIPO POLAROID PARA PRODUCTOS DESTACADOS */
         .polaroid-card {
             background: white;
             padding: 12px 12px 20px 12px;
@@ -67,7 +64,7 @@ const injectCuteAnimations = () => {
             object-fit: cover;
         }
         .polaroid-title {
-            font-family: 'Fraunces', serif; /* Tu fuente elegante */
+            font-family: 'Fraunces', serif;
             font-size: 1.2rem;
             color: #333;
             margin: 0;
@@ -139,7 +136,6 @@ class UIManager {
         }
 
         const toast = document.createElement('div');
-        // Colores pastel más tiernos para los toasts
         const bgColor = type === 'success' ? '#a8e6cf' : (type === 'error' ? '#ff8b94' : '#fdffab');
         const color = type === 'info' ? '#333' : '#fff';
         const iconClass = type === 'success' ? 'bi-stars' : (type === 'error' ? 'bi-emoji-frown-fill' : 'bi-info-circle-fill');
@@ -163,21 +159,21 @@ class UIManager {
 
     static closeAllModals() {
         document.querySelectorAll('.modal-overlay.open').forEach(modal => {
-            // Efecto de desinflar antes de cerrar
             const box = modal.querySelector('.modal-box');
             if(box) box.style.transform = 'scale(0.8)';
             setTimeout(() => {
                 modal.classList.remove('open');
-                if(box) box.style.transform = ''; // Restaurar para la próxima apertura
+                if(box) box.style.transform = ''; 
             }, 150);
         });
     }
 }
 
+// Exponer de forma global para que login.js (si lo sigues usando separado) lo detecte
 window.Dulzura = { CONFIG, State, UI: UIManager };
 
 /* ==========================================================
-   3. INICIALIZACIÓN DEL MOTOR
+   3. INICIALIZACIÓN DEL MOTOR (DOM READY)
    ========================================================== */
 document.addEventListener('DOMContentLoaded', () => {
     injectCuteAnimations();
@@ -197,15 +193,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
                 State.productos = await res.json();
                 
-                this.renderMenu();          // Renderiza el menu.html
-                this.renderFeatured();      // NUEVO: Renderiza el index.html
+                this.renderMenu();          
+                this.renderFeatured();      
                 AdminController.renderAdminList();
             } catch (error) {
                 UIManager.showToast('Oops! No pudimos conectar con los postres 🍰', 'error');
             }
         }
 
-        // Renderiza TODOS los productos en la pestaña Menú
+        // Renderiza en la página del menú
         static renderMenu() {
             const grid = document.getElementById('menuGrid');
             const empty = document.getElementById('menuEmpty');
@@ -245,29 +241,26 @@ document.addEventListener('DOMContentLoaded', () => {
             grid.appendChild(fragment);
         }
 
-        // NUEVO: Renderiza SOLO los 3 últimos productos en el Inicio (index.html) estilo Polaroid
+        // Renderiza estilo Polaroid en la página de inicio
         static renderFeatured() {
             const featuredGrid = document.getElementById('featuredGrid');
-            if (!featuredGrid) return; // Si no estamos en el index, no hace nada.
+            if (!featuredGrid) return; 
 
             while (featuredGrid.firstChild) {
                 featuredGrid.removeChild(featuredGrid.firstChild);
             }
 
-            // Tomamos solo los 3 últimos productos añadidos a la base de datos
             const destacados = State.productos.slice(-3).reverse(); 
             const fragment = document.createDocumentFragment();
 
             destacados.forEach(p => {
                 const card = document.createElement('article');
-                // Asignamos la nueva clase Polaroid
                 card.className = 'polaroid-card reveal in-view';
                 
                 const iconOrImage = p.imagen 
                     ? `<img src="${p.imagen}" loading="lazy">` 
                     : `<i class="bi ${CONFIG.ICONS[p.categoria] || 'bi-cake2'} fs-1" style="color: #ccc;"></i>`;
 
-                // Solo la imagen y el nombre
                 card.innerHTML = `
                     <div class="polaroid-img-wrapper">${iconOrImage}</div>
                     <h3 class="polaroid-title">${UIManager.escapeHtml(p.nombre)}</h3>
@@ -290,6 +283,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Funciones Globales de la Interfaz
+    window.abrirDetalle = (id) => {
+        const producto = State.productos.find(p => p.id === id);
+        const modal = document.getElementById('productModal');
+        if (!producto || !modal) return;
+
+        document.getElementById('productModalName').textContent = producto.nombre;
+        document.getElementById('productModalPrice').textContent = `$${producto.precio}`;
+        document.getElementById('productModalDesc').textContent = producto.descripcion;
+
+        const img = document.getElementById('productModalImage');
+        if (producto.imagen) { 
+            img.src = producto.imagen; 
+            img.style.display = 'block'; 
+        } else { 
+            img.style.display = 'none'; 
+        }
+
+        const btn = document.getElementById('productModalOrder');
+        const msj = encodeURIComponent(`¡Hola! Me encantaría pedir este producto súper kiut: *${producto.nombre}* 🍰✨`);
+        btn.href = `https://wa.me/${CONFIG.PHONE_NUMBER}?text=${msj}`;
+
+        modal.classList.add('open');
+    };
+
     /* ==========================================================
        5. CONTROLADOR DEL PANEL DE ADMINISTRADOR (ADMIN)
        ========================================================== */
@@ -298,35 +316,41 @@ document.addEventListener('DOMContentLoaded', () => {
             this.bindEvents();
         }
 
-        static renderAdminList() {
-            const adminList = document.getElementById('adminList');
-            if (!adminList) return;
-            adminList.innerHTML = '';
+        // NUEVO: Renderiza los mensajes recibidos
+        static renderAdminMessages() {
+            const list = document.getElementById('adminMessagesList');
+            if (!list) return;
+            list.innerHTML = '';
             
-            State.productos.forEach(p => {
+            // Obtenemos los mensajes guardados localmente (puedes conectarlo a tu base de datos luego)
+            const mensajes = JSON.parse(localStorage.getItem('dulzura_mensajes')) || [];
+
+            if (mensajes.length === 0) {
+                list.innerHTML = '<p style="text-align:center; color:#999; margin-top:20px;">No hay mensajes nuevos. 🕊️</p>';
+                return;
+            }
+
+            mensajes.reverse().forEach(m => {
                 const item = document.createElement('div');
                 item.className = 'admin-list-item';
-                item.style.display = 'flex';
-                item.style.alignItems = 'center';
-                item.style.gap = '10px';
-                item.style.padding = '10px';
-
-                const mediaContent = p.imagen ? `<img src="${p.imagen}" style="width:40px; height:40px; border-radius:8px; object-fit:cover;">` : `<i class="bi ${CONFIG.ICONS[p.categoria]} fs-3" style="color:var(--berry);"></i>`;
+                item.style.alignItems = 'flex-start';
                 
                 item.innerHTML = `
-                    <div class="admin-list-thumb">${mediaContent}</div>
+                    <div class="admin-list-thumb" style="background: var(--rose); color: var(--berry);">
+                        <i class="bi bi-envelope-paper-heart fs-4"></i>
+                    </div>
                     <div class="admin-list-info" style="flex:1;">
-                        <strong style="display:block;">${UIManager.escapeHtml(p.nombre)}</strong>
-                        <span style="font-size:0.85rem; color:#666;">$${UIManager.escapeHtml(p.precio)}</span>
+                        <strong style="display:block;">${UIManager.escapeHtml(m.nombre)}</strong>
+                        <span style="font-size:0.75rem; color:#888;">${m.fecha}</span>
+                        <p style="margin: 6px 0 0; font-size:0.85rem; color: var(--choco); line-height: 1.4;">
+                            ${UIManager.escapeHtml(m.mensaje)}
+                        </p>
                     </div>
-                    <div class="admin-list-btns" style="display:flex; gap:5px;">
-                        <!-- BOTÓN DE EDITAR -->
-                        <button class="btn-icon" onclick="window.editarProducto(${p.id})" title="Editar" style="background:#ffeaa7; color:#d35400; border:none; padding:8px; border-radius:8px; cursor:pointer;"><i class="bi bi-pencil-fill"></i></button>
-                        <!-- BOTÓN DE BORRAR -->
-                        <button class="danger btn-icon" onclick="window.eliminarProducto(${p.id})" title="Eliminar" style="background:#ff769b; color:white; border:none; padding:8px; border-radius:8px; cursor:pointer;"><i class="bi bi-trash-fill"></i></button>
-                    </div>
+                    <button class="danger btn-icon" onclick="window.eliminarMensaje(${m.id})" title="Eliminar" style="background:#ff769b; color:white; border:none; padding:8px; border-radius:8px; cursor:pointer; flex-shrink: 0;">
+                        <i class="bi bi-trash-fill"></i>
+                    </button>
                 `;
-                adminList.appendChild(item);
+                list.appendChild(item);
             });
         }
 
@@ -362,7 +386,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 await MenuController.fetchProducts(); 
                 
-                // Reset de Interfaz
                 AdminController.resetFormMode(form);
                 UIManager.showToast(editId ? '¡Producto actualizado precioso! ✨' : '¡Nuevo producto listo! 🍰');
 
@@ -376,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         static resetFormMode(form) {
             form.reset();
-            delete form.dataset.editId; // Quitamos el modo edición
+            delete form.dataset.editId; 
             form.querySelector('button[type="submit"]').innerHTML = 'Guardar Producto';
             
             const preview = document.getElementById('previewImagen');
@@ -390,24 +413,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         static bindEvents() {
-            const dropzone = document.getElementById('dropzoneImage');
-            const inputImagen = document.getElementById('adminImagen');
-            const previewImagen = document.getElementById('previewImagen');
+            const tabProductos = document.getElementById('tabAdminProductos');
+            const tabMensajes = document.getElementById('tabAdminMensajes');
+            const viewProductos = document.getElementById('adminViewProductos');
+            const viewMensajes = document.getElementById('adminViewMensajes');
 
-            if (dropzone && inputImagen) {
-                dropzone.addEventListener('click', () => inputImagen.click());
-                inputImagen.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-
-                    if (file.size > CONFIG.MAX_FILE_SIZE) {
-                        return UIManager.showToast('Imagen muy pesada (Máx 2MB) ☁️', 'error');
-                    }
-                    
-                    previewImagen.src = URL.createObjectURL(file);
-                    previewImagen.style.display = 'block';
-                    dropzone.querySelector('i').style.display = 'none';
-                    dropzone.querySelector('span').style.display = 'none';
+            if (tabProductos && tabMensajes) {
+                tabProductos.addEventListener('click', () => {
+                    tabProductos.classList.add('active'); tabMensajes.classList.remove('active');
+                    viewProductos.style.display = 'block'; viewMensajes.style.display = 'none';
+                });
+                tabMensajes.addEventListener('click', () => {
+                    tabMensajes.classList.add('active'); tabProductos.classList.remove('active');
+                    viewProductos.style.display = 'none'; viewMensajes.style.display = 'block';
+                    AdminController.renderAdminMessages(); // Actualiza la lista al abrir
                 });
             }
 
@@ -419,13 +438,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // LÓGICA DE EDICIÓN: Rellena el formulario con los datos del producto seleccionado
+    // Funciones globales de Admin
     window.editarProducto = (id) => {
         const producto = State.productos.find(p => p.id === id);
         if (!producto) return;
 
         const form = document.getElementById('formAdminProducto');
-        form.dataset.editId = producto.id; // Activamos el modo edición asignando el ID
+        form.dataset.editId = producto.id; 
         
         document.getElementById('adminNombre').value = producto.nombre;
         document.getElementById('adminCategoria').value = producto.categoria;
@@ -450,20 +469,16 @@ document.addEventListener('DOMContentLoaded', () => {
         form.querySelector('button[type="submit"]').innerHTML = '<i class="bi bi-stars"></i> Actualizar Producto ✨';
         UIManager.showToast('Modo edición activado ✏️', 'info');
         
-        // Hacer scroll automático hacia arriba donde está el formulario
         document.querySelector('.modal-box').scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    window.eliminarProducto = async (id) => {
-        if(confirm('¿Seguro que deseas eliminar esta dulzura del catálogo? 😿')) {
-            try {
-                const res = await fetch(`${CONFIG.API_URL}/productos/${id}`, { method: 'DELETE' });
-                if (!res.ok) throw new Error('Desincronización con el servidor.');
-                await MenuController.fetchProducts();
-                UIManager.showToast('Borrado exitosamente 🧹');
-            } catch (err) { 
-                UIManager.showToast(err.message, 'error'); 
-            }
+   window.eliminarMensaje = (id) => {
+        if(confirm('¿Eliminar este mensaje? 🗑️')) {
+            let mensajes = JSON.parse(localStorage.getItem('dulzura_mensajes')) || [];
+            mensajes = mensajes.filter(m => m.id !== id);
+            localStorage.setItem('dulzura_mensajes', JSON.stringify(mensajes));
+            AdminController.renderAdminMessages();
+            UIManager.showToast('Mensaje eliminado 🧹');
         }
     };
 
@@ -472,22 +487,27 @@ document.addEventListener('DOMContentLoaded', () => {
        ========================================================== */
     class FormController {
         static init() {
-            const orderForm = document.getElementById('orderForm');
-            if (orderForm) {
-                orderForm.addEventListener('submit', (e) => {
+            // NUEVO: Guardar mensaje del formulario de contacto
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', (e) => {
                     e.preventDefault();
-                    const data = {
-                        nombre: document.getElementById('pedidoNombre').value,
-                        telefono: document.getElementById('pedidoTelefono')?.value || 'No proporcionado',
-                        producto: document.getElementById('pedidoProducto').selectedOptions[0].text,
-                        detalles: document.getElementById('pedidoDetalles').value
+                    const nombre = document.getElementById('nombre').value;
+                    const mensaje = document.getElementById('mensaje').value;
+                    
+                    const nuevoMensaje = {
+                        id: Date.now(),
+                        nombre: nombre,
+                        mensaje: mensaje,
+                        fecha: new Date().toLocaleString()
                     };
-                    
-                    const payload = `*NUEVO PEDIDO KIUT* 🌸%0A%0A👤 *Cliente:* ${data.nombre}%0A📱 *Teléfono:* ${data.telefono}%0A🛍️ *Antojo:* ${data.producto}%0A📝 *Detalles:* ${data.detalles}%0A%0A_Enviado con amor desde la web_ ✨`;
-                    window.open(`https://wa.me/${CONFIG.PHONE_NUMBER}?text=${payload}`, '_blank');
-                    
-                    orderForm.reset();
-                    UIManager.showToast('¡Llevándote a WhatsApp! 💖');
+
+                    const mensajesGuardados = JSON.parse(localStorage.getItem('dulzura_mensajes')) || [];
+                    mensajesGuardados.push(nuevoMensaje);
+                    localStorage.setItem('dulzura_mensajes', JSON.stringify(mensajesGuardados));
+
+                    UIManager.showToast('¡Mensaje enviado con éxito! 💌');
+                    contactForm.reset();
                 });
             }
         }

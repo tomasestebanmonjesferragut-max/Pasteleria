@@ -118,6 +118,9 @@ app.put('/api/productos/:id', upload.single('imagen'), (req, res) => {
     }
 });
 
+// ... aquí arriba está todo tu código de app.post('/api/productos'...) ...
+
+// Última ruta de productos que ya tenías
 app.delete('/api/productos/:id', (req, res) => {
     const id = req.params.id;
     db.query('DELETE FROM productos WHERE id = ?', [id], function(err, result) {
@@ -126,7 +129,57 @@ app.delete('/api/productos/:id', (req, res) => {
     });
 });
 
-// 3. INICIAR EL SERVIDOR
+// ==========================================================
+// RUTAS PARA LOS MENSAJES (CONTACTO) - ¡PEGA ESTO AQUÍ!
+// ==========================================================
+
+// 1. POST: Guardar un nuevo mensaje del formulario
+app.post('/api/mensajes', (req, res) => {
+    const { nombre, mensaje } = req.body;
+    
+    if (!nombre || !mensaje) {
+        return res.status(400).json({ error: 'El nombre y el mensaje son obligatorios.' });
+    }
+
+    const sql = 'INSERT INTO mensajes (nombre, mensaje) VALUES (?, ?)';
+    db.query(sql, [nombre, mensaje], (err, result) => {
+        if (err) {
+            console.error('Error al guardar el mensaje:', err);
+            return res.status(500).json({ error: 'Error de base de datos al guardar el mensaje.' });
+        }
+        res.status(201).json({ id: result.insertId, message: '¡Mensaje guardado con éxito!' });
+    });
+});
+
+// 2. GET: Obtener todos los mensajes para el Panel de Control
+app.get('/api/mensajes', (req, res) => {
+    const sql = 'SELECT * FROM mensajes ORDER BY fecha DESC';
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error al obtener los mensajes:', err);
+            return res.status(500).json({ error: 'Error al obtener los mensajes.' });
+        }
+        res.json(results);
+    });
+});
+
+// 3. DELETE: Borrar un mensaje desde el Panel de Control
+app.delete('/api/mensajes/:id', (req, res) => {
+    const { id } = req.params;
+    const sql = 'DELETE FROM mensajes WHERE id = ?';
+    
+    db.query(sql, [id], (err, result) => {
+        if (err) {
+            console.error('Error al borrar el mensaje:', err);
+            return res.status(500).json({ error: 'Error al borrar el mensaje.' });
+        }
+        res.json({ message: 'Mensaje borrado correctamente.' });
+    });
+});
+
+// ==========================================================
+// 3. INICIAR EL SERVIDOR (ESTO DEBE IR AL FINAL DE TODO)
+// ==========================================================
 app.listen(PORT, () => {
     console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
 });

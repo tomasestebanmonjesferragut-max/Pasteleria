@@ -119,9 +119,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Exponer para que otros módulos lo utilicen
+    // Exponer la clase para que otros módulos la utilicen
     window.MenuController = MenuController;
+
+    // =========================================================
+    // NUEVO: Función global para abrir el modal de detalles
+    // =========================================================
+    window.abrirDetalle = (id) => {
+        const producto = State.productos.find(p => p.id === id);
+        const modal = document.getElementById('productModal');
+        if (!producto || !modal) return;
+
+        // Llenar datos del modal
+        document.getElementById('productModalName').textContent = producto.nombre;
+        document.getElementById('productModalPrice').textContent = `$${producto.precio}`;
+        document.getElementById('productModalDesc').textContent = producto.descripcion;
+
+        // Manejar la imagen
+        const img = document.getElementById('productModalImage');
+        if (producto.imagen) { 
+            img.src = producto.imagen; 
+            img.style.display = 'block'; 
+        } else { 
+            img.style.display = 'none'; 
+        }
+
+        // Configurar botón de WhatsApp
+        const btn = document.getElementById('productModalOrder');
+        const msj = encodeURIComponent(`¡Hola! Me encantaría pedir este producto súper kiut: *${producto.nombre}* 🍰✨`);
+        btn.href = `https://wa.me/${CONFIG.PHONE_NUMBER}?text=${msj}`;
+
+        // Abrir modal con la animación
+        modal.classList.add('open');
+    };
 
     // Inicializar el módulo
     MenuController.init();
 });
+

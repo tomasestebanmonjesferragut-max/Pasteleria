@@ -178,3 +178,4 @@ window.Dulzura = { CONFIG, State, UI: UIManager };
 document.addEventListener('DOMContentLoaded', () => {
     injectCuteAnimations();
 });
+

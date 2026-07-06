@@ -17,4 +17,4 @@ db.connect((err) => {
 });
 
 // Exportamos la conexión para que el servidor (server.js) pueda usarla
-module.exports = db;
+module.exports = db;    
