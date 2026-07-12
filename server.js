@@ -12,7 +12,10 @@ const fs = require('fs');
 const db = require('./db'); 
 
 const app = express();
-const PORT = 3000;
+// Antes: const PORT = 3000; -> fijo, solo servía en tu computador.
+// Muchos hostings (Render, Railway, etc.) asignan el puerto automáticamente
+// mediante process.env.PORT; si no existe (por ejemplo en tu PC), usa 3000.
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -86,7 +89,10 @@ app.get('/api/productos', (req, res) => {
 
 app.post('/api/productos', upload.single('imagen'), (req, res) => {
     const { nombre, categoria, precio, descripcion } = req.body;
-    const imagenUrl = req.file ? `http://localhost:${PORT}/uploads/${req.file.filename}` : '';
+    // Antes: `http://localhost:${PORT}/uploads/...` -> la imagen solo se veía en tu PC.
+    // Ahora se arma con el dominio real desde el que llega la petición,
+    // así la foto se ve igual en el celular, el PC o cualquier dispositivo.
+    const imagenUrl = req.file ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}` : '';
 
     const sql = 'INSERT INTO productos (nombre, categoria, precio, descripcion, imagen) VALUES (?, ?, ?, ?, ?)';
     db.query(sql, [nombre, categoria, precio, descripcion, imagenUrl], function(err, result) {
@@ -102,7 +108,7 @@ app.put('/api/productos/:id', upload.single('imagen'), (req, res) => {
     
     // Si el usuario subió una nueva imagen, actualizamos todo
     if (req.file) {
-        const imagenUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`;
+        const imagenUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
         const sql = 'UPDATE productos SET nombre=?, categoria=?, precio=?, descripcion=?, imagen=? WHERE id=?';
         db.query(sql, [nombre, categoria, precio, descripcion, imagenUrl, id], (err) => {
             if (err) return res.status(500).json({ error: err.message });

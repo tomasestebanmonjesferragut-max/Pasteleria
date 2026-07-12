@@ -102,7 +102,10 @@ const injectCuteAnimations = () => {
    1. ESTADO GLOBAL E INMUTABILIDAD
    ========================================================== */
 const CONFIG = Object.freeze({
-    API_URL: 'http://localhost:3000/api',
+    // Antes: 'http://localhost:3000/api' -> solo funcionaba en la misma PC del servidor.
+    // Ahora se calcula según el dispositivo/dominio que esté visitando la página,
+    // así que celular, tablet o PC ven siempre los mismos datos guardados en la base de datos.
+    API_URL: `${window.location.origin}/api`,
     MAX_FILE_SIZE: 2 * 1024 * 1024,
     PHONE_NUMBER: '56930535436',
     ICONS: Object.freeze({ 

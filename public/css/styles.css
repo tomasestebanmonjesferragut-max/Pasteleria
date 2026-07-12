@@ -41,6 +41,16 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
+/* Utilidades tipo Bootstrap usadas en el header (antes no estaban definidas
+   y el botón "Ingresar" nunca se ocultaba en pantallas chicas) */
+.d-none { display: none !important; }
+@media (min-width: 768px) {
+  .d-md-inline-flex { display: inline-flex !important; }
+}
+
+/* Red de seguridad: ninguna imagen debe desbordar su contenedor en ningún dispositivo */
+img { max-width: 100%; height: auto; }
+
 body {
   margin: 0;
   background: var(--cream);
@@ -549,6 +559,33 @@ body { animation: fadeInPage .5s ease; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
   .reveal { opacity: 1; transform: none; }
+}
+
+/* ---------- AJUSTES PARA TELÉFONOS PEQUEÑOS (< 420px) ---------- */
+@media (max-width: 420px) {
+  .header-inner { padding: 12px 16px; gap: 10px; }
+  .brand-text { font-size: .95rem; }
+  .brand-badge { width: 32px; height: 32px; font-size: .9rem; }
+  .section-inner { padding: 0 16px; }
+  .hero { padding-top: 54px; }
+  .hero h1 { max-width: 100%; }
+  .hero-stats { gap: 20px; }
+  .hero-cta { flex-direction: column; align-items: stretch; }
+  .hero-cta .btn-pill { text-align: center; justify-content: center; }
+  .footer-contact { flex-direction: column; gap: 10px; }
+  .contact-card { padding: 14px 16px; }
+  .modal-box { padding: 18px; max-height: 88vh; overflow-y: auto; }
+}
+
+/* El mapa embebido se ve mejor con menos alto en pantallas angostas */
+@media (max-width: 680px) {
+  iframe[title*="Mapa"], iframe[title*="mapa"] { height: 260px !important; }
+}
+
+/* ---------- PANTALLAS GRANDES (PC / monitores anchos) ---------- */
+@media (min-width: 1400px) {
+  .section-inner { max-width: 1320px; }
+  .header-inner { max-width: 1320px; }
 }
 
 /* ---------- GALERÍA POLAROID INFINITA (NOSOTROS) ---------- */
