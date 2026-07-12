@@ -428,6 +428,16 @@ body { animation: fadeInPage .5s ease; }
 .footer-inner { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
 .site-footer .brand-badge { background: var(--gold); color: var(--choco); }
 .site-footer .brand-text { color: #fff; }
+.footer-contact { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; font-size: .88rem; }
+.footer-contact a, .footer-contact span { color: var(--rose-soft); display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+.footer-contact a:hover { color: var(--gold); }
+.footer-contact i { color: var(--gold); }
+.footer-social { display: flex; gap: 14px; }
+.footer-social a {
+  width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  border: 1px solid rgba(255,255,255,.2); color: #fff; font-size: 1rem; transition: all .2s ease;
+}
+.footer-social a:hover { background: var(--gold); color: var(--choco); border-color: var(--gold); transform: translateY(-2px); }
 .footer-social { display: flex; gap: 14px; }
 .footer-social a {
   width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.25);

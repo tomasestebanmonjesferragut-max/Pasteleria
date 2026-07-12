@@ -104,7 +104,7 @@ const injectCuteAnimations = () => {
 const CONFIG = Object.freeze({
     API_URL: 'http://localhost:3000/api',
     MAX_FILE_SIZE: 2 * 1024 * 1024,
-    PHONE_NUMBER: '56900000000',
+    PHONE_NUMBER: '56930535436',
     ICONS: Object.freeze({ 
         tortas: 'bi-cake2-fill', cupcakes: 'bi-cup-hot-fill', 
         alfajores: 'bi-cookie', cajas: 'bi-gift-fill' 
