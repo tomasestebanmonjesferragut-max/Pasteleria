@@ -89,10 +89,9 @@ app.get('/api/productos', (req, res) => {
 
 app.post('/api/productos', upload.single('imagen'), (req, res) => {
     const { nombre, categoria, precio, descripcion } = req.body;
-    // Antes: `http://localhost:${PORT}/uploads/...` -> la imagen solo se veía en tu PC.
-    // Ahora se arma con el dominio real desde el que llega la petición,
-    // así la foto se ve igual en el celular, el PC o cualquier dispositivo.
-    const imagenUrl = req.file ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}` : '';
+    
+    // CAMBIO CLAVE: Guardamos solo la ruta relativa para que funcione en PC y Celular
+    const imagenUrl = req.file ? `/uploads/${req.file.filename}` : '';
 
     const sql = 'INSERT INTO productos (nombre, categoria, precio, descripcion, imagen) VALUES (?, ?, ?, ?, ?)';
     db.query(sql, [nombre, categoria, precio, descripcion, imagenUrl], function(err, result) {
@@ -106,16 +105,16 @@ app.put('/api/productos/:id', upload.single('imagen'), (req, res) => {
     const { nombre, categoria, precio, descripcion } = req.body;
     const id = req.params.id;
     
-    // Si el usuario subió una nueva imagen, actualizamos todo
     if (req.file) {
-        const imagenUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+        // CAMBIO CLAVE: Guardamos solo la ruta relativa
+        const imagenUrl = `/uploads/${req.file.filename}`;
+        
         const sql = 'UPDATE productos SET nombre=?, categoria=?, precio=?, descripcion=?, imagen=? WHERE id=?';
         db.query(sql, [nombre, categoria, precio, descripcion, imagenUrl, id], (err) => {
             if (err) return res.status(500).json({ error: err.message });
             res.json({ message: "Producto actualizado con nueva imagen", id });
         });
     } else {
-        // Si no subió imagen, mantenemos la imagen anterior y actualizamos solo los textos
         const sql = 'UPDATE productos SET nombre=?, categoria=?, precio=?, descripcion=? WHERE id=?';
         db.query(sql, [nombre, categoria, precio, descripcion, id], (err) => {
             if (err) return res.status(500).json({ error: err.message });
@@ -186,6 +185,6 @@ app.delete('/api/mensajes/:id', (req, res) => {
 // ==========================================================
 // 3. INICIAR EL SERVIDOR (ESTO DEBE IR AL FINAL DE TODO)
 // ==========================================================
-app.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Servidor corriendo en el puerto: ${PORT}`);
 });
