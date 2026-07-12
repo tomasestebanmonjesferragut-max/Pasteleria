@@ -20,7 +20,6 @@
   --radius-box: 22px;
   --font-display: 'Fraunces', serif;
   --font-body: 'Work Sans', sans-serif;
-  --tu-nuevo-color: #AQUÍ_EL_CÓDIGO_HEX; /*Añade tu color aquí*/
 }
 
 [data-theme="dark"] {
@@ -141,8 +140,79 @@ code {
 
 .burger span { display: block; height: 2px; width: 22px; background: var(--choco); margin: 0 auto; }
 
+/* ---------- SCROLL PROGRESS BAR ---------- */
+.scroll-progress { position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 300; background: transparent; pointer-events: none; }
+.scroll-progress-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--gold), var(--berry));
+  transition: width .1s ease-out;
+  box-shadow: 0 0 8px rgba(142,47,61,0.5);
+}
+
+/* ---------- THEME TOGGLE ---------- */
+.theme-toggle { position: relative; overflow: hidden; }
+.theme-toggle i { transition: transform .5s cubic-bezier(.68,-0.55,.27,1.55), opacity .3s ease; }
+.theme-toggle .bi-moon-stars-fill { position: absolute; }
+[data-theme="dark"] .theme-toggle .bi-sun-fill { transform: rotate(180deg) scale(1); opacity: 1; }
+.theme-toggle .bi-sun-fill { opacity: 0; transform: rotate(-90deg) scale(.4); position: absolute; }
+[data-theme="dark"] .theme-toggle .bi-moon-stars-fill { opacity: 0; transform: rotate(90deg) scale(.4); }
+.theme-toggle .bi-moon-stars-fill { opacity: 1; }
+
+/* ---------- SCROLL TO TOP ---------- */
+.scroll-top-btn {
+  position: fixed; bottom: 24px; right: 96px; z-index: 90;
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--paper); color: var(--berry); border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  opacity: 0; transform: translateY(20px) scale(.8); pointer-events: none;
+  transition: opacity .3s ease, transform .3s ease, background .2s ease;
+}
+.scroll-top-btn.show { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+.scroll-top-btn:hover { background: var(--berry); color: #fff; transform: translateY(-3px) scale(1.05); }
+
+/* ---------- ANIMACIONES GLOBALES ---------- */
+@keyframes floatSlow { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-14px) rotate(-1deg); } }
+@keyframes floatSlowAlt { 0%,100% { transform: translateY(0) rotate(4deg); } 50% { transform: translateY(-10px) rotate(6deg); } }
+@keyframes shimmerText {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes fadeInPage { from { opacity: 0; } to { opacity: 1; } }
+@keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes blobMove {
+  0%,100% { border-radius: 42% 58% 65% 35% / 45% 45% 55% 55%; }
+  50% { border-radius: 60% 40% 35% 65% / 55% 60% 40% 45%; }
+}
+
+body { animation: fadeInPage .5s ease; }
+
+.text-shimmer {
+  background: linear-gradient(90deg, var(--berry) 0%, var(--gold) 25%, var(--berry) 50%, var(--gold) 75%, var(--berry) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: shimmerText 6s linear infinite;
+}
+
+/* Botones: micro-interacción de "presión" */
+.btn-pill { position: relative; }
+.btn-pill:active { transform: scale(.96); }
+.btn-pill-solid:hover { transform: translateY(-3px) scale(1.02); }
+
+/* Tarjetas con aparición escalonada (usar junto a .reveal) */
+.reveal { transition: opacity .6s cubic-bezier(.21,.6,.35,1), transform .6s cubic-bezier(.21,.6,.35,1); }
+
 /* ---------- HERO ---------- */
 .hero { position: relative; padding: 70px 0 0; overflow: hidden; }
+.hero-blob {
+  position: absolute; width: 480px; height: 480px; z-index: 0;
+  background: linear-gradient(135deg, var(--rose), var(--gold));
+  opacity: .35; filter: blur(10px);
+  animation: blobMove 10s ease-in-out infinite;
+  top: -140px; right: -160px;
+}
+[data-theme="dark"] .hero-blob { opacity: .18; }
+.hero-inner { position: relative; z-index: 1; }
 .hero-inner {
   max-width: 1160px; margin: 0 auto; padding: 0 24px 60px;
   display: grid; grid-template-columns: 1.1fr .9fr; gap: 50px; align-items: center;
@@ -164,7 +234,7 @@ code {
   position: relative; width: 260px; aspect-ratio: 1/1;
   background: var(--paper); border: 2px solid var(--line); border-radius: var(--radius-box);
   box-shadow: var(--shadow-lift); display: flex; align-items: center; justify-content: center;
-  transform: rotate(-3deg);
+  animation: floatSlow 5s ease-in-out infinite;
 }
 .pastry-box-lid {
   position: absolute; top: -14px; left: 6%; width: 88%; height: 28px;
@@ -178,7 +248,8 @@ code {
   font-family: var(--font-display); font-weight: 600; font-size: .8rem; line-height: 1.2;
   padding: 10px 14px; border-radius: 50%; width: 78px; height: 78px;
   display: flex; align-items: center; justify-content: center; text-align: center;
-  transform: rotate(10deg); box-shadow: var(--shadow-soft);
+  box-shadow: var(--shadow-soft);
+  animation: floatSlowAlt 4s ease-in-out infinite;
 }
 
 .scallop-divider { line-height: 0; }
@@ -455,6 +526,8 @@ code {
   .trust-grid { grid-template-columns: 1fr; }
   .polaroid-stack { height: 260px; }
   .whatsapp-float { bottom: 16px; right: 16px; width: 52px; height: 52px; font-size: 1.4rem; }
+  .scroll-top-btn { bottom: 16px; right: 78px; width: 40px; height: 40px; }
+  .hero-blob { width: 280px; height: 280px; right: -100px; top: -80px; }
   .modal-box { padding: 24px; }
 
   .main-nav.open {

@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
+  <div class="scroll-progress"><div class="scroll-progress-bar" id="scrollProgress"></div></div>
 
   <!-- HEADER UNIVERSAL ACTUALIZADO -->
   <header class="site-header">
@@ -36,6 +37,9 @@
           <button id="btnLogout" class="icon-btn" title="Cerrar sesión" style="width: 36px; height: 36px;"><i class="bi bi-box-arrow-right"></i></button>
         </div>
 
+        <button id="btnTheme" class="icon-btn theme-toggle" title="Cambiar tema" aria-label="Cambiar tema claro/oscuro">
+          <i class="bi bi-moon-stars-fill"></i><i class="bi bi-sun-fill"></i>
+        </button>
         <button id="btnMenu" class="burger" aria-label="Abrir menú" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
@@ -88,6 +92,16 @@
       <p class="footer-note">© 2026 Dulzura en tu Hogar</p>
     </div>
   </footer>
+
+  <!-- BOTÓN VOLVER ARRIBA -->
+  <button id="scrollTopBtn" class="scroll-top-btn" title="Volver arriba" aria-label="Volver arriba">
+    <i class="bi bi-arrow-up"></i>
+  </button>
+
+  <!-- WHATSAPP FLOTANTE -->
+  <a href="https://wa.me/56900000000" target="_blank" class="whatsapp-float" title="Escríbenos por WhatsApp" aria-label="Escríbenos por WhatsApp">
+    <i class="bi bi-whatsapp"></i>
+  </a>
 
   <!-- SISTEMA ADMIN UNIVERSAL -->
   <button id="btnGlobalAdmin" class="icon-btn" style="position: fixed; bottom: 24px; left: 24px; z-index: 90; box-shadow: var(--shadow-lift); display: none;">

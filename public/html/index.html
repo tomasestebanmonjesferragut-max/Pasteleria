@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
+  <div class="scroll-progress"><div class="scroll-progress-bar" id="scrollProgress"></div></div>
 
   <!-- HEADER UNIVERSAL ACTUALIZADO -->
   <header class="site-header">
@@ -36,12 +37,72 @@
           <button id="btnLogout" class="icon-btn" title="Cerrar sesión" style="width: 36px; height: 36px;"><i class="bi bi-box-arrow-right"></i></button>
         </div>
 
+        <button id="btnTheme" class="icon-btn theme-toggle" title="Cambiar tema" aria-label="Cambiar tema claro/oscuro">
+          <i class="bi bi-moon-stars-fill"></i><i class="bi bi-sun-fill"></i>
+        </button>
         <button id="btnMenu" class="burger" aria-label="Abrir menú" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
       </div>
     </div>
   </header>
+
+  <!-- SECCIÓN: HERO -->
+  <section class="hero">
+    <div class="hero-blob" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <span class="eyebrow reveal"><i class="bi bi-stars"></i> Repostería casera, hecha con amor</span>
+        <h1 class="reveal">Endulza tu día con <span class="text-shimmer">sabor de hogar</span></h1>
+        <p class="lead reveal">Tortas, cupcakes y alfajores horneados a diario en San Joaquín, con ingredientes frescos y ese toque casero que se nota en cada bocado.</p>
+        <div class="hero-cta reveal">
+          <a href="pedir.html" class="btn-pill btn-pill-solid btn-lg"><i class="bi bi-basket3-fill me-2"></i> Pedir ahora</a>
+          <a href="menu.html" class="btn-pill btn-pill-ghost btn-lg">Ver el menú</a>
+        </div>
+        <div class="hero-stats reveal">
+          <div><strong>+500</strong><span>Pedidos entregados</span></div>
+          <div><strong>4.9★</strong><span>Calificación de clientes</span></div>
+          <div><strong>100%</strong><span>Ingredientes frescos</span></div>
+        </div>
+      </div>
+      <div class="hero-visual reveal">
+        <div class="pastry-box">
+          <div class="pastry-box-lid"></div>
+          <div class="pastry-box-icons">
+            <i class="bi bi-cake2-fill"></i>
+            <i class="bi bi-cup-hot-fill"></i>
+            <i class="bi bi-cookie"></i>
+          </div>
+          <span class="pastry-tag">Hecho<br>hoy</span>
+        </div>
+      </div>
+    </div>
+    <div class="scallop-divider">
+      <svg viewBox="0 0 1200 40" preserveAspectRatio="none"><path d="M0,40 Q30,0 60,40 T120,40 T180,40 T240,40 T300,40 T360,40 T420,40 T480,40 T540,40 T600,40 T660,40 T720,40 T780,40 T840,40 T900,40 T960,40 T1020,40 T1080,40 T1140,40 T1200,40 V40 H0 Z"></path></svg>
+    </div>
+  </section>
+
+  <!-- SECCIÓN: FRANJA DE CONFIANZA -->
+  <section class="trust-strip">
+    <div class="section-inner trust-grid">
+      <div class="trust-item reveal">
+        <i class="bi bi-egg-fried"></i>
+        <div><strong>100% Artesanal</strong><span>Horneado fresco cada día</span></div>
+      </div>
+      <div class="trust-item reveal">
+        <i class="bi bi-truck"></i>
+        <div><strong>Entrega a domicilio</strong><span>Directo a tu puerta</span></div>
+      </div>
+      <div class="trust-item reveal">
+        <i class="bi bi-brush"></i>
+        <div><strong>Diseños a pedido</strong><span>Personaliza tu torta</span></div>
+      </div>
+      <div class="trust-item reveal">
+        <i class="bi bi-whatsapp"></i>
+        <div><strong>Pedidos fáciles</strong><span>Todo por WhatsApp</span></div>
+      </div>
+    </div>
+  </section>
 
 <!-- SECCIÓN: PRODUCTOS DESTACADOS (CARGADOS DESDE MYSQL) -->
   <section class="section section-alt">
@@ -80,6 +141,66 @@
     </div>
   </section>
 
+  <!-- SECCIÓN: TESTIMONIOS -->
+  <section class="section section-alt">
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <span class="tag-label">Lo que dicen</span>
+        <h2>Clientes felices, mesas más dulces</h2>
+      </div>
+      <div class="testimonial-grid">
+        <div class="testimonial-card reveal">
+          <div class="stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+          <p>"La torta llegó impecable y el sabor superó todas mis expectativas. Se nota el cariño en cada detalle."</p>
+          <span class="testimonial-name">— Camila R.</span>
+        </div>
+        <div class="testimonial-card reveal">
+          <div class="stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+          <p>"Pedí unos cupcakes personalizados para un cumpleaños y quedaron hermosos. Súper recomendados."</p>
+          <span class="testimonial-name">— Matías G.</span>
+        </div>
+        <div class="testimonial-card reveal">
+          <div class="stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+          <p>"Los alfajores son adictivos. Ya son parte fija de mis pedidos cada quincena."</p>
+          <span class="testimonial-name">— Francisca T.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN: PREGUNTAS FRECUENTES -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <span class="tag-label">Dudas frecuentes</span>
+        <h2>Preguntas y respuestas</h2>
+      </div>
+      <div class="faq-list reveal">
+        <div class="faq-item">
+          <button class="faq-question">¿Con cuánta anticipación debo pedir?<i class="bi bi-chevron-down"></i></button>
+          <div class="faq-answer"><p>Recomendamos hacer tu pedido con al menos 48 horas de anticipación para tortas personalizadas; los productos del catálogo pueden coordinarse con menos tiempo.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">¿Hacen despacho a domicilio?<i class="bi bi-chevron-down"></i></button>
+          <div class="faq-answer"><p>Sí, realizamos entregas a domicilio dentro de San Joaquín y comunas cercanas. Coordina el detalle directamente por WhatsApp.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">¿Puedo personalizar el diseño de mi torta?<i class="bi bi-chevron-down"></i></button>
+          <div class="faq-answer"><p>Por supuesto. Cuéntanos el tema, colores y cantidad de personas, y armamos una propuesta a tu medida.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BANDA CTA -->
+  <section class="cta-band">
+    <div class="section-inner cta-inner reveal">
+      <h2>¿Listo para endulzar tu momento?</h2>
+      <p>Escríbenos y arma tu pedido en minutos, sin complicaciones.</p>
+      <a href="pedir.html" class="btn-pill btn-pill-solid btn-lg">Hacer mi pedido</a>
+    </div>
+  </section>
+
   <!-- FOOTER UNIVERSAL -->
   <footer class="site-footer">
     <div class="section-inner footer-inner">
@@ -90,6 +211,16 @@
       <p class="footer-note">© 2026 Dulzura en tu Hogar</p>
     </div>
   </footer>
+
+  <!-- BOTÓN VOLVER ARRIBA -->
+  <button id="scrollTopBtn" class="scroll-top-btn" title="Volver arriba" aria-label="Volver arriba">
+    <i class="bi bi-arrow-up"></i>
+  </button>
+
+  <!-- WHATSAPP FLOTANTE -->
+  <a href="https://wa.me/56900000000" target="_blank" class="whatsapp-float" title="Escríbenos por WhatsApp" aria-label="Escríbenos por WhatsApp">
+    <i class="bi bi-whatsapp"></i>
+  </a>
 
   <!-- SISTEMA ADMIN UNIVERSAL -->
   <button id="btnGlobalAdmin" class="icon-btn" style="position: fixed; bottom: 24px; left: 24px; z-index: 90; box-shadow: var(--shadow-lift); display: none;">

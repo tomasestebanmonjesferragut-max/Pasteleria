@@ -171,11 +171,88 @@ class UIManager {
     }
 }
 
+/* ==========================================================
+   3. MODO OSCURO / CLARO (persistente)
+   ========================================================== */
+const ThemeManager = {
+    KEY: 'dulzura_theme',
+    init() {
+        const saved = localStorage.getItem(this.KEY);
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = saved || (prefersDark ? 'dark' : 'light');
+        this.apply(theme);
+
+        const btn = document.getElementById('btnTheme');
+        if (btn) {
+            btn.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+                this.apply(current === 'dark' ? 'light' : 'dark');
+            });
+        }
+    },
+    apply(theme) {
+        if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+        }
+        localStorage.setItem(this.KEY, theme);
+    }
+};
+
+/* ==========================================================
+   4. BARRA DE PROGRESO DE SCROLL + BOTÓN "SUBIR"
+   ========================================================== */
+const ScrollFX = {
+    init() {
+        const bar = document.getElementById('scrollProgress');
+        const topBtn = document.getElementById('scrollTopBtn');
+
+        const onScroll = () => {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+
+            if (bar) bar.style.width = pct + '%';
+            if (topBtn) topBtn.classList.toggle('show', scrollTop > 400);
+        };
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+
+        if (topBtn) {
+            topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        }
+    }
+};
+
+/* ==========================================================
+   5. ACORDEÓN DE PREGUNTAS FRECUENTES (FAQ)
+   ========================================================== */
+const FaqManager = {
+    init() {
+        document.querySelectorAll('.faq-item').forEach(item => {
+            const question = item.querySelector('.faq-question');
+            if (!question) return;
+            question.addEventListener('click', () => {
+                const wasOpen = item.classList.contains('open');
+                item.closest('.faq-list')?.querySelectorAll('.faq-item.open').forEach(other => {
+                    if (other !== item) other.classList.remove('open');
+                });
+                item.classList.toggle('open', !wasOpen);
+            });
+        });
+    }
+};
+
 // Exponer las variables para que los otros archivos puedan leerlas
 window.Dulzura = { CONFIG, State, UI: UIManager };
 
 // Inicializar el estilo base al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
     injectCuteAnimations();
+    ThemeManager.init();
+    ScrollFX.init();
+    FaqManager.init();
 });
 
