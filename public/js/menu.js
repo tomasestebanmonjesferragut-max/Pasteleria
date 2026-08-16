@@ -10,10 +10,49 @@ document.addEventListener('DOMContentLoaded', () => {
     // Importamos las configuraciones y herramientas desde core.js
     const { CONFIG, State, UI } = window.Dulzura;
 
+    // Páginas de categoría (dulce.html, perfume.html, almacen.html) marcan su
+    // sección con data-scope="dulce|perfume|almacen"; cada scope solo debe
+    // ver/gestionar los productos de las categorías que le corresponden.
+    const SCOPES = {
+        dulce: ['tortas', 'cupcakes', 'alfajores'],
+        // 'perfumes' y 'almacen' quedan por compatibilidad con productos
+        // guardados antes de tener subcategorías.
+        perfume: ['perfumes', 'perfume-hombre', 'perfume-mujer', 'perfume-unisex'],
+        almacen: ['almacen', 'almacen-abarrotes', 'almacen-bebidas', 'almacen-snacks', 'almacen-limpieza']
+    };
+
     class MenuController {
         static async init() {
+            this.applyUrlFilter();
             await this.fetchProducts();
             this.bindEvents();
+        }
+
+        static getScope() {
+            return document.getElementById('menu')?.dataset.scope || null;
+        }
+
+        // Permite abrir el catálogo ya filtrado desde otras páginas
+        // (ej: dulce.html?cat=cupcakes)
+        static applyUrlFilter() {
+            const params = new URLSearchParams(window.location.search);
+            const cat = params.get('cat');
+            const chips = document.querySelectorAll('.filter-chip[data-filter]');
+            if (!chips.length) return;
+
+            const match = cat && Array.from(chips).some(c => c.dataset.filter === cat);
+            const targetFilter = match ? cat : 'todas';
+
+            State.currentFilter = targetFilter;
+            chips.forEach(c => c.classList.toggle('active', c.dataset.filter === targetFilter));
+        }
+
+        // Restringe State.productos a las categorías del scope de la página actual
+        static applyScopeFilter() {
+            const scope = this.getScope();
+            const categorias = scope && SCOPES[scope];
+            if (!categorias) return;
+            State.productos = State.productos.filter(p => categorias.includes(p.categoria));
         }
 
         static async fetchProducts() {
@@ -21,11 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const res = await fetch(`${CONFIG.API_URL}/productos`);
                 if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
                 State.productos = await res.json();
-                
+                this.applyScopeFilter();
+
                 // Renderizamos las vistas dependientes del catálogo
                 this.renderMenu();
                 this.renderFeatured();
-                
+
                 // Si el AdminController ya está cargado, refrescamos su lista
                 if (window.AdminController) {
                     window.AdminController.renderAdminList();
@@ -36,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Renderiza el catálogo completo en menu.html
+        // Renderiza la grilla de productos (dulce.html, perfume.html, almacen.html)
         static renderMenu() {
             const grid = document.getElementById('menuGrid');
             const empty = document.getElementById('menuEmpty');

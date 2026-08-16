@@ -108,9 +108,16 @@ const CONFIG = Object.freeze({
     API_URL: `${window.location.origin}/api`,
     MAX_FILE_SIZE: 2 * 1024 * 1024,
     PHONE_NUMBER: '56930535436',
-    ICONS: Object.freeze({ 
-        tortas: 'bi-cake2-fill', cupcakes: 'bi-cup-hot-fill', 
-        alfajores: 'bi-cookie', cajas: 'bi-gift-fill' 
+    ICONS: Object.freeze({
+        tortas: 'bi-cake2-fill', cupcakes: 'bi-cup-hot-fill',
+        alfajores: 'bi-cookie', cajas: 'bi-gift-fill',
+        // Genéricos (compatibilidad con productos antiguos)
+        perfumes: 'bi-droplet-fill', almacen: 'bi-basket2-fill',
+        // Subcategorías de Perfume
+        'perfume-hombre': 'bi-droplet-fill', 'perfume-mujer': 'bi-flower2', 'perfume-unisex': 'bi-stars',
+        // Subcategorías de Almacén
+        'almacen-abarrotes': 'bi-basket2-fill', 'almacen-bebidas': 'bi-cup-straw',
+        'almacen-snacks': 'bi-bag-fill', 'almacen-limpieza': 'bi-droplet'
     })
 });
 

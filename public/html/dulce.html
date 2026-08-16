@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tortas, cupcakes y alfajores artesanales de Dulzura en tu Hogar. Repostería casera en Maipú, Santiago, con entrega a domicilio.">
+  <meta property="og:title" content="Dulce | Dulzura en tu Hogar">
+  <meta property="og:description" content="Tortas, cupcakes y alfajores artesanales de Dulzura en tu Hogar. Repostería casera en Maipú, Santiago, con entrega a domicilio.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_CL">
+  <meta name="theme-color" content="#8E2F3D">
+  <title>Dulce | Dulzura en tu Hogar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="../css/styles.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    "name": "Dulzura en tu Hogar",
+    "description": "Pastelería artesanal, perfumería y almacén en un solo lugar.",
+    "image": "https://raw.githubusercontent.com/tomasestebanmonjesferragut-max/Pasteleria/main/public/img/negocio.jpg",
+    "telephone": "+56930535436",
+    "priceRange": "$$",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Vicaría 2572",
+      "addressLocality": "Maipú",
+      "addressRegion": "Región Metropolitana",
+      "postalCode": "9250000",
+      "addressCountry": "CL"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -33.5080168,
+      "longitude": -70.7915884
+    },
+    "url": "https://tomasestebanmonjesferragut-max.github.io/Pasteleria/",
+    "sameAs": [
+      "https://www.instagram.com/dulzuraentuhogar",
+      "https://www.google.com/maps/place/Dulzura+en+tu+hogar/@-33.5080167,-70.7964593,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c3d939c61d69:0x7e02fa45e1fcfb2!8m2!3d-33.5080168!4d-70.7915884!16s%2Fg%2F11y07h9l1c"
+    ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5.0",
+      "reviewCount": "6"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="scroll-progress"><div class="scroll-progress-bar" id="scrollProgress"></div></div>
+
+  <!-- HEADER UNIVERSAL -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-badge"><i class="bi bi-cake2-fill"></i></span>
+        <span class="brand-text">Dulzura <em>en tu Hogar</em></span>
+      </a>
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html">Inicio</a>
+        <a href="dulce.html">Dulce</a>
+        <a href="perfume.html">Perfume</a>
+        <a href="almacen.html">Almacén</a>
+        <a href="informacion.html">Información</a>
+      </nav>
+      <div class="header-actions">
+        <!-- UI cuando NO hay sesión -->
+        <div id="ui-guest" style="display: flex; gap: 10px; align-items: center;">
+          <button id="btnOpenLogin" class="btn-pill btn-pill-ghost d-none d-md-inline-flex"><i class="bi bi-person"></i> Ingresar</button>
+          <a href="https://wa.me/56930535436" target="_blank" class="btn-pill btn-pill-solid">Pedir ahora</a>
+        </div>
+
+        <!-- UI cuando SÍ hay sesión -->
+        <div id="ui-logged" style="display: none; gap: 15px; align-items: center;">
+          <span id="userNameDisplay" style="font-weight: 600; font-size: 0.95rem; color: var(--berry);"></span>
+          <button id="btnLogout" class="icon-btn" title="Cerrar sesión" style="width: 36px; height: 36px;"><i class="bi bi-box-arrow-right"></i></button>
+        </div>
+
+        <button id="btnTheme" class="icon-btn theme-toggle" title="Cambiar tema" aria-label="Cambiar tema claro/oscuro">
+          <i class="bi bi-moon-stars-fill"></i><i class="bi bi-sun-fill"></i>
+        </button>
+        <button id="btnMenu" class="burger" aria-label="Abrir menú" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO: DULCE -->
+  <section class="section section-alt" id="menu" data-scope="dulce">
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <span class="tag-label">Pastelería</span>
+        <h2>Todo lo Dulce</h2>
+        <p class="text-muted-soft">Tortas, cupcakes y alfajores horneados a diario, con ingredientes frescos y diseños a pedido.</p>
+      </div>
+      <div class="menu-filters" id="menuFilters">
+        <button class="filter-chip active" data-filter="todas">Todas</button>
+        <button class="filter-chip" data-filter="tortas">Tortas</button>
+        <button class="filter-chip" data-filter="cupcakes">Cupcakes</button>
+        <button class="filter-chip" data-filter="alfajores">Alfajores</button>
+      </div>
+      <div class="menu-grid" id="menuGrid">
+        <p class="menu-empty" id="menuEmpty" style="display:none;">Aún no hay productos en esta categoría.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER UNIVERSAL -->
+  <footer class="site-footer">
+    <div class="section-inner footer-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-badge"><i class="bi bi-cake2-fill"></i></span>
+        <span class="brand-text">Dulzura <em>en tu Hogar</em></span>
+      </a>
+      <div class="footer-contact">
+        <a href="https://www.google.com/maps/place/Dulzura+en+tu+hogar/@-33.5080167,-70.7964593,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c3d939c61d69:0x7e02fa45e1fcfb2!8m2!3d-33.5080168!4d-70.7915884!16s%2Fg%2F11y07h9l1c" target="_blank"><i class="bi bi-geo-alt-fill"></i> Vicaría 2572, Maipú, RM</a>
+        <a href="tel:+56930535436"><i class="bi bi-telephone-fill"></i> +56 9 3053 5436</a>
+        <span><i class="bi bi-star-fill"></i> 5.0 en Google (6 reseñas)</span>
+      </div>
+      <div class="footer-social">
+        <a href="https://wa.me/56930535436" target="_blank" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+        <a href="https://www.instagram.com/dulzuraentuhogar" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="https://www.google.com/maps/place/Dulzura+en+tu+hogar/@-33.5080167,-70.7964593,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c3d939c61d69:0x7e02fa45e1fcfb2!8m2!3d-33.5080168!4d-70.7915884!16s%2Fg%2F11y07h9l1c" target="_blank" aria-label="Google Maps"><i class="bi bi-map-fill"></i></a>
+      </div>
+      <p class="footer-note">© 2026 Dulzura en tu Hogar · Maipú, Santiago</p>
+    </div>
+  </footer>
+
+  <!-- BOTÓN VOLVER ARRIBA -->
+  <button id="scrollTopBtn" class="scroll-top-btn" title="Volver arriba" aria-label="Volver arriba">
+    <i class="bi bi-arrow-up"></i>
+  </button>
+
+  <!-- WHATSAPP FLOTANTE -->
+  <a href="https://wa.me/56930535436" target="_blank" class="whatsapp-float" title="Escríbenos por WhatsApp" aria-label="Escríbenos por WhatsApp">
+    <i class="bi bi-whatsapp"></i>
+  </a>
+
+  <!-- SISTEMA ADMIN UNIVERSAL -->
+  <button id="btnGlobalAdmin" class="icon-btn" style="position: fixed; bottom: 24px; left: 24px; z-index: 90; box-shadow: var(--shadow-lift); display: none;">
+    <i class="bi bi-gear-fill"></i>
+  </button>
+
+  <!-- Modal 1: Login y Registro -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-box" style="max-width: 420px; padding: 30px;">
+      <button class="modal-close" id="btnCloseAuth"><i class="bi bi-x-lg"></i></button>
+
+      <!-- Pestañas -->
+      <div style="display: flex; gap: 10px; margin-bottom: 24px;">
+        <button id="tabLogin" class="filter-chip active" style="flex: 1; text-align: center;">Iniciar Sesión</button>
+        <button id="tabRegister" class="filter-chip" style="flex: 1; text-align: center;">Crear Cuenta</button>
+      </div>
+
+      <!-- Formulario de Login -->
+      <form id="formLogin" class="contact-form">
+        <div class="form-row">
+          <label>Correo electrónico</label>
+          <input type="email" id="loginCorreo" required>
+        </div>
+        <div class="form-row">
+          <label>Contraseña</label>
+          <input type="password" id="loginPassword" required>
+        </div>
+        <p id="loginError" style="color: var(--berry); font-size: 0.85rem; display: none; margin: 5px 0 0;">Credenciales incorrectas.</p>
+        <button type="submit" class="btn-pill btn-pill-solid" style="width: 100%; margin-top: 15px;">Ingresar</button>
+      </form>
+
+      <!-- Formulario de Registro -->
+      <form id="formRegister" class="contact-form" style="display: none;">
+        <div class="form-row">
+          <label>Nombre completo</label>
+          <input type="text" id="regNombre" required>
+        </div>
+        <div class="form-row">
+          <label>Teléfono (WhatsApp)</label>
+          <input type="tel" id="regTelefono" required>
+        </div>
+        <div class="form-row">
+          <label>Correo electrónico</label>
+          <input type="email" id="regCorreo" required>
+        </div>
+        <div class="form-row">
+          <label>Contraseña</label>
+          <input type="password" id="regPassword" required>
+        </div>
+        <p id="regError" style="color: var(--berry); font-size: 0.85rem; display: none; margin: 5px 0 0;"></p>
+        <button type="submit" class="btn-pill btn-pill-solid" style="width: 100%; margin-top: 15px;">Registrarme</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Panel de Administración -->
+  <div class="modal-overlay" id="adminModal">
+    <div class="modal-box">
+      <button class="modal-close" id="btnCloseAdmin"><i class="bi bi-x-lg"></i></button>
+      <h2>Panel de Control · Dulce</h2>
+
+      <!-- PESTAÑAS DEL ADMIN -->
+      <div style="display: flex; gap: 10px; margin-bottom: 24px;">
+        <button id="tabAdminProductos" class="filter-chip active" style="flex: 1; text-align: center;">Catálogo</button>
+        <button id="tabAdminMensajes" class="filter-chip" style="flex: 1; text-align: center;">Mensajes</button>
+      </div>
+
+      <!-- VISTA 1: PRODUCTOS -->
+      <div id="adminViewProductos">
+        <p class="modal-sub">Agrega o edita productos de pastelería: sube la foto y completa la información de cada uno.</p>
+        <form id="formAdminProducto" class="contact-form">
+          <div class="form-grid-2">
+            <div class="form-row">
+              <label>Nombre del producto</label>
+              <input type="text" id="adminNombre" required>
+            </div>
+            <div class="form-row">
+              <label>Categoría</label>
+              <select id="adminCategoria" required>
+                <option value="tortas">Tortas</option>
+                <option value="cupcakes">Cupcakes</option>
+                <option value="alfajores">Alfajores</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <label>Precio</label>
+            <input type="text" id="adminPrecio" required>
+          </div>
+          <div class="form-row">
+            <label>Descripción</label>
+            <textarea id="adminDesc" rows="2" required></textarea>
+          </div>
+          <div class="form-row">
+            <label>Imagen</label>
+            <div class="dropzone" id="dropzoneImage">
+              <i class="bi bi-cloud-arrow-up-fill"></i>
+              <span>Haz clic para subir foto</span>
+              <input type="file" id="adminImagen" accept="image/*" style="display: none;">
+              <img id="previewImagen" style="display: none; width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-top: 10px;">
+            </div>
+          </div>
+          <button type="submit" class="btn-pill btn-pill-solid mt-4" style="width: 100%;">Guardar Producto</button>
+        </form>
+        <hr class="modal-divider">
+        <div class="admin-list-head"><h4>Catálogo de Dulce</h4></div>
+        <div class="admin-list" id="adminList"></div>
+      </div>
+
+      <!-- VISTA 2: MENSAJES -->
+      <div id="adminViewMensajes" style="display: none;">
+        <p class="modal-sub">Bandeja de entrada de clientes.</p>
+        <div class="admin-list" id="adminMessagesList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Detalles del Producto -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal-box" style="text-align: center; max-width: 450px; padding: 24px;">
+      <button class="modal-close" id="btnCloseProduct"><i class="bi bi-x-lg"></i></button>
+
+      <!-- Imagen en grande -->
+      <img id="productModalImage" src="" alt="Vista previa del producto" style="width: 100%; max-height: 320px; object-fit: cover; border-radius: 16px; margin-bottom: 18px; box-shadow: var(--shadow-soft); display: none;">
+
+      <!-- Detalles -->
+      <h2 id="productModalName" style="font-size: 1.6rem; margin-bottom: 6px;"></h2>
+      <p id="productModalPrice" style="color: var(--berry); font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; margin-bottom: 12px;"></p>
+      <p id="productModalDesc" style="color: var(--choco-soft); font-size: 0.95rem; margin-bottom: 24px; line-height: 1.5;"></p>
+
+      <!-- Botón de acción directo -->
+      <a id="productModalOrder" href="#" target="_blank" class="btn-pill btn-pill-solid" style="width: 100%; padding: 1rem;">
+        <i class="bi bi-whatsapp me-2"></i> Pedir este producto
+      </a>
+    </div>
+  </div>
+
+  <!-- AQUÍ ESTÁN LOS 4 SCRIPTS EN EL ORDEN PERFECTO -->
+  <script src="../js/core.js"></script>
+  <script src="../js/login.js"></script>
+  <script src="../js/menu.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>
