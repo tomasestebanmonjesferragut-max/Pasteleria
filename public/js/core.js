@@ -182,35 +182,6 @@ class UIManager {
 }
 
 /* ==========================================================
-   3. MODO OSCURO / CLARO (persistente)
-   ========================================================== */
-const ThemeManager = {
-    KEY: 'dulzura_theme',
-    init() {
-        const saved = localStorage.getItem(this.KEY);
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = saved || (prefersDark ? 'dark' : 'light');
-        this.apply(theme);
-
-        const btn = document.getElementById('btnTheme');
-        if (btn) {
-            btn.addEventListener('click', () => {
-                const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-                this.apply(current === 'dark' ? 'light' : 'dark');
-            });
-        }
-    },
-    apply(theme) {
-        if (theme === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        } else {
-            document.documentElement.removeAttribute('data-theme');
-        }
-        localStorage.setItem(this.KEY, theme);
-    }
-};
-
-/* ==========================================================
    4. BARRA DE PROGRESO DE SCROLL + BOTÓN "SUBIR"
    ========================================================== */
 const ScrollFX = {
@@ -261,7 +232,6 @@ window.Dulzura = { CONFIG, State, UI: UIManager };
 // Inicializar el estilo base al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
     injectCuteAnimations();
-    ThemeManager.init();
     ScrollFX.init();
     FaqManager.init();
 });
