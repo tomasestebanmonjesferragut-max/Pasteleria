@@ -8,7 +8,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     // Importamos las configuraciones y herramientas desde core.js
-    const { CONFIG, State, UI } = window.Dulzura;
+    const { CONFIG, State, UI, phoneFor } = window.Dulzura;
 
     // Páginas de categoría (dulce.html, perfume.html, almacen.html) marcan su
     // sección con data-scope="dulce|perfume|almacen"; cada scope solo debe
@@ -184,10 +184,10 @@ document.addEventListener('DOMContentLoaded', () => {
             img.style.display = 'none'; 
         }
 
-        // Configurar botón de WhatsApp
+        // Configurar botón de WhatsApp (Perfume va al WhatsApp de Patty, el resto al número principal)
         const btn = document.getElementById('productModalOrder');
         const msj = encodeURIComponent(`¡Hola! Me encantaría pedir este producto súper kiut: *${producto.nombre}* 🍰✨`);
-        btn.href = `https://wa.me/${CONFIG.PHONE_NUMBER}?text=${msj}`;
+        btn.href = `https://wa.me/${phoneFor(producto.categoria)}?text=${msj}`;
 
         // Abrir modal con la animación
         modal.classList.add('open');

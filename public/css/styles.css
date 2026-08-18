@@ -321,7 +321,7 @@ body { animation: fadeInPage .5s ease; }
 .filter-chip:hover { border-color: var(--berry); color: var(--berry); }
 .filter-chip.active { background: var(--berry); border-color: var(--berry); color: #fff; }
 
-.menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+.menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 .menu-empty { grid-column: 1 / -1; text-align: center; color: var(--choco-soft); padding: 30px 0; }
 
 .menu-card {
@@ -366,6 +366,16 @@ body { animation: fadeInPage .5s ease; }
   background: var(--berry); color: #fff; padding: 6px 12px; border-radius: 999px;
 }
 .menu-card.hide { display: none; }
+
+/* ---------- CATÁLOGO EN AFICHE (PERFUME) ---------- */
+.perfume-poster-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 26px; }
+.perfume-poster {
+    display: block; border-radius: var(--radius-box); overflow: hidden;
+    box-shadow: var(--shadow-soft); transition: transform .25s ease, box-shadow .25s ease;
+}
+.perfume-poster img { width: 100%; display: block; }
+.perfume-poster:hover { transform: translateY(-6px); box-shadow: var(--shadow-lift); }
+@media (max-width: 700px) { .perfume-poster-grid { grid-template-columns: 1fr; } }
 
 /* ---------- STEPS ---------- */
 .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; }

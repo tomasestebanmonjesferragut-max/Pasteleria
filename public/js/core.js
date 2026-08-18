@@ -108,6 +108,14 @@ const CONFIG = Object.freeze({
     API_URL: `${window.location.origin}/api`,
     MAX_FILE_SIZE: 2 * 1024 * 1024,
     PHONE_NUMBER: '56930535436',
+    // La línea de Perfume la atiende Patty por su propio WhatsApp; el resto
+    // de las categorías (Dulce, Almacén) sigue yendo al número principal.
+    PHONE_BY_CATEGORY: Object.freeze({
+        'perfume-hombre': '56957738346',
+        'perfume-mujer': '56957738346',
+        'perfume-unisex': '56957738346',
+        'perfumes': '56957738346'
+    }),
     ICONS: Object.freeze({
         tortas: 'bi-cake2-fill', cupcakes: 'bi-cup-hot-fill',
         alfajores: 'bi-cookie', cajas: 'bi-gift-fill',
@@ -226,8 +234,37 @@ const FaqManager = {
     }
 };
 
+// Elige el WhatsApp de destino según la categoría del producto (ver
+// PHONE_BY_CATEGORY más arriba).
+function phoneFor(categoria) {
+    return CONFIG.PHONE_BY_CATEGORY[categoria] || CONFIG.PHONE_NUMBER;
+}
+
+/* ==========================================================
+   6. CABECERA DE AUTENTICACIÓN PARA PETICIONES PROTEGIDAS
+   ========================================================== */
+// Las rutas de administrador (crear/editar/borrar productos y mensajes)
+// exigen un token en el servidor; esta función arma la cabecera si hay
+// una sesión activa, y se usa en cada fetch que lo necesite.
+function authHeaders() {
+    const token = State.currentUser?.token;
+    return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+// Si el servidor responde 401/403, el token dejó de ser válido: cerramos
+// la sesión local para que el usuario vuelva a iniciar sesión.
+function handleAuthError(res) {
+    if (res.status === 401 || res.status === 403) {
+        localStorage.removeItem('dulzura_user');
+        State.currentUser = null;
+        UIManager.showToast('Tu sesión expiró, inicia sesión de nuevo 🔒', 'error');
+        return true;
+    }
+    return false;
+}
+
 // Exponer las variables para que los otros archivos puedan leerlas
-window.Dulzura = { CONFIG, State, UI: UIManager };
+window.Dulzura = { CONFIG, State, UI: UIManager, authHeaders, handleAuthError, phoneFor };
 
 // Inicializar el estilo base al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
