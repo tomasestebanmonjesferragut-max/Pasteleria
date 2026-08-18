@@ -288,26 +288,6 @@ document.addEventListener('DOMContentLoaded', () => {
        ========================================================== */
     class FormController {
         static init() {
-            // Lógica para enviar Pedidos por WhatsApp
-            const orderForm = document.getElementById('orderForm');
-            if (orderForm) {
-                orderForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const data = {
-                        nombre: document.getElementById('pedidoNombre').value,
-                        telefono: document.getElementById('pedidoTelefono')?.value || 'No proporcionado',
-                        producto: document.getElementById('pedidoProducto').selectedOptions[0].text,
-                        detalles: document.getElementById('pedidoDetalles').value
-                    };
-                    
-                    const payload = `*NUEVO PEDIDO KIUT* 🌸%0A%0A👤 *Cliente:* ${data.nombre}%0A📱 *Teléfono:* ${data.telefono}%0A🛍️ *Antojo:* ${data.producto}%0A📝 *Detalles:* ${data.detalles}%0A%0A_Enviado con amor desde la web_ ✨`;
-                    window.open(`https://wa.me/${CONFIG.PHONE_NUMBER}?text=${payload}`, '_blank');
-                    
-                    orderForm.reset();
-                    UI.showToast('¡Llevándote a WhatsApp! 💖');
-                });
-            }
-
             // ENVIAR DUDAS A LA BASE DE DATOS
             const contactForm = document.getElementById('contactForm');
             if (contactForm) {

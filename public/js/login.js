@@ -36,17 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (btnGlobalAdmin) {
                     btnGlobalAdmin.style.display = State.currentUser.rol === 'admin' ? 'flex' : 'none';
                 }
-
-                // Autocompletar datos automáticamente en la página "Pedir"
-                const pedidoNombre = document.getElementById('pedidoNombre');
-                const campoTel = document.getElementById('campoTelefonoOculto');
-                const pedidoTelefono = document.getElementById('pedidoTelefono');
-                
-                if (pedidoNombre) pedidoNombre.value = State.currentUser.nombre;
-                if (campoTel) {
-                    campoTel.style.display = 'block';
-                    pedidoTelefono.value = State.currentUser.telefono || '';
-                }
             } else {
                 // Modo invitado (sin sesión)
                 if (uiGuest) uiGuest.style.display = 'flex';
