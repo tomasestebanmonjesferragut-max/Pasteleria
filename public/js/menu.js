@@ -60,19 +60,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 const res = await fetch(`${CONFIG.API_URL}/productos`);
                 if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
                 State.productos = await res.json();
-                this.applyScopeFilter();
-
-                // Renderizamos las vistas dependientes del catálogo
-                this.renderMenu();
-                this.renderFeatured();
-
-                // Si el AdminController ya está cargado, refrescamos su lista
-                if (window.AdminController) {
-                    window.AdminController.renderAdminList();
-                }
             } catch (error) {
-                console.error('[MenuController] Error:', error);
-                UI.showToast('Oops! No pudimos conectar con los postres 🍰', 'error');
+                // Sin backend disponible (ej: viendo el sitio en GitHub Pages,
+                // que solo sirve archivos estáticos): mostramos un catálogo
+                // de respaldo en vez de dejar la sección vacía.
+                try {
+                    const fallback = await fetch('../data/products.json');
+                    if (!fallback.ok) throw new Error('fallback no disponible');
+                    State.productos = await fallback.json();
+                } catch (fallbackError) {
+                    console.error('[MenuController] Error:', error, fallbackError);
+                    UI.showToast('Oops! No pudimos conectar con los postres 🍰', 'error');
+                    return;
+                }
+            }
+
+            this.applyScopeFilter();
+
+            // Renderizamos las vistas dependientes del catálogo
+            this.renderMenu();
+            this.renderFeatured();
+
+            // Si el AdminController ya está cargado, refrescamos su lista
+            if (window.AdminController) {
+                window.AdminController.renderAdminList();
             }
         }
 
