@@ -7,7 +7,7 @@
 'use strict';
 
 document.addEventListener('DOMContentLoaded', () => {
-    const { CONFIG, State, UI } = window.Dulzura;
+    const { CONFIG, State, UI, authHeaders, handleAuthError } = window.Dulzura;
 
     /* ==========================================================
        5. CONTROLADOR DEL PANEL DE ADMINISTRADOR (ADMIN)
@@ -74,8 +74,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 formData.append('descripcion', document.getElementById('adminDesc').value);
                 if (archivoFoto) formData.append('imagen', archivoFoto);
 
-                const res = await fetch(endpoint, { method: method, body: formData });
-                if (!res.ok) throw new Error('No pudimos guardar los cambios.');
+                const res = await fetch(endpoint, { method: method, body: formData, headers: authHeaders() });
+                if (!res.ok) {
+                    if (handleAuthError(res)) return;
+                    throw new Error('No pudimos guardar los cambios.');
+                }
 
                 if (window.MenuController) await window.MenuController.fetchProducts(); 
                 
@@ -113,7 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
             list.innerHTML = '<p style="text-align:center;">Cargando mensajes...</p>';
             
             try {
-                const res = await fetch(`${CONFIG.API_URL}/mensajes`);
+                const res = await fetch(`${CONFIG.API_URL}/mensajes`, { headers: authHeaders() });
+                if (!res.ok) {
+                    if (handleAuthError(res)) { list.innerHTML = ''; return; }
+                    throw new Error('Error al cargar.');
+                }
                 const mensajes = await res.json();
                 list.innerHTML = '';
 
@@ -243,8 +250,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.eliminarProducto = async (id) => {
         if(confirm('¿Seguro que deseas eliminar esta dulzura del catálogo? 😿')) {
             try {
-                const res = await fetch(`${CONFIG.API_URL}/productos/${id}`, { method: 'DELETE' });
-                if (!res.ok) throw new Error('Desincronización con el servidor.');
+                const res = await fetch(`${CONFIG.API_URL}/productos/${id}`, { method: 'DELETE', headers: authHeaders() });
+                if (!res.ok) {
+                    if (handleAuthError(res)) return;
+                    throw new Error('Desincronización con el servidor.');
+                }
                 
                 if (window.MenuController) await window.MenuController.fetchProducts();
                 
@@ -259,8 +269,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.eliminarMensaje = async (id) => {
         if(confirm('¿Eliminar este mensaje? 🗑️')) {
             try {
-                const res = await fetch(`${CONFIG.API_URL}/mensajes/${id}`, { method: 'DELETE' });
-                if (!res.ok) throw new Error('No se pudo borrar el mensaje del servidor.');
+                const res = await fetch(`${CONFIG.API_URL}/mensajes/${id}`, { method: 'DELETE', headers: authHeaders() });
+                if (!res.ok) {
+                    if (handleAuthError(res)) return;
+                    throw new Error('No se pudo borrar el mensaje del servidor.');
+                }
                 
                 AdminController.renderAdminMessages(); 
                 UI.showToast('Mensaje eliminado 🧹');

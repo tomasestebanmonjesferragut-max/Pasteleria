@@ -23,8 +23,20 @@ CREATE TABLE IF NOT EXISTS usuarios (
     password VARCHAR(255) NOT NULL
 );
 
--- Insertamos los 3 administradores maestros
-INSERT INTO usuarios (rol, nombre, telefono, correo, password) VALUES 
-('admin', 'Tomas Monjes', '+56900000000', 'tomas@dulzura.local', 'Tomasmonjes'),
-('admin', 'Monica Monjes', '+56900000002', 'monica@dulzura.local', 'Monicamonjes'),
-('admin', 'Patricia Muñoz', '+56900000003', 'patricia@dulzura.local', 'Patriciamuñoz');
+CREATE TABLE IF NOT EXISTS mensajes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    mensaje TEXT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Las cuentas de administrador YA NO se crean aquí en texto plano.
+-- Antes este archivo traía 3 contraseñas de admin sin cifrar, y como el
+-- repositorio es público en GitHub, quedaban visibles para cualquiera.
+--
+-- Para crear un administrador de forma segura (guarda la contraseña
+-- cifrada con bcrypt), ejecuta desde la carpeta del proyecto:
+--
+--   npm run create-admin -- "Nombre Apellido" correo@ejemplo.com +56900000000
+--
+-- El script te pedirá la contraseña de forma interactiva.

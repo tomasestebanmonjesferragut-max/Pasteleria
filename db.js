@@ -1,20 +1,27 @@
+require('dotenv').config();
 const mysql = require('mysql2');
 
-// Configuración de las credenciales de MySQL
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root', // Cambia esto si tu contraseña de MySQL es diferente
-    database: 'dulzura_db'
+// Pool de conexiones: soporta varias peticiones a la vez y se reconecta solo
+// si una conexión se cae (a diferencia de una única conexión con .createConnection).
+const db = mysql.createPool({
+    host: process.env.DB_HOST || 'localhost',
+    port: process.env.DB_PORT || 3306,
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'dulzura_db',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
-db.connect((err) => {
+db.getConnection((err, connection) => {
     if (err) {
         console.error('Error conectando a MySQL:', err.message);
         return;
     }
-    console.log('Conectado exitosamente a la base de datos MySQL (dulzura_db).');
+    console.log(`Conectado exitosamente a la base de datos MySQL (${process.env.DB_NAME || 'dulzura_db'}).`);
+    connection.release();
 });
 
-// Exportamos la conexión para que el servidor (server.js) pueda usarla
-module.exports = db;    
+// Exportamos el pool para que el servidor (server.js) pueda usarlo
+module.exports = db;
