@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Página no encontrada | Dulzura en tu Hogar</title>
+  <!-- GitHub Pages solo usa un 404.html en la raíz, y lo muestra a cualquier profundidad.
+       Este archivo envía a la página real (pages/404.html) calculando la raíz del sitio:
+       /<repo>/ en github.io, o / en un dominio propio. -->
+  <script>
+    var raiz = location.hostname.endsWith('github.io') ? '/' + location.pathname.split('/')[1] + '/' : '/';
+    location.replace(raiz + 'pages/404.html');
+  </script>
+</head>
+<body>
+  <p><a href="/">Volver al inicio</a></p>
+</body>
+</html>

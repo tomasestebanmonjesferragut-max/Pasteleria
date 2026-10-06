@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "nombre": "She She Fáakihat Al-Ahlam SS021",
+    "categoria": "perfume-mujer",
+    "precio": "8000",
+    "descripcion": "Eau de Parfum 100ml, línea She She - Fáakihat Al-Ahlam (Ítem SS021). Aroma floral de larga duración.",
+    "imagen": "assets/images/perfumes/she-she-ss021.webp"
+  },
+  {
+    "id": 2,
+    "nombre": "She She Fáakihat Al-Ahlam SS018",
+    "categoria": "perfume-mujer",
+    "precio": "8000",
+    "descripcion": "Eau de Parfum 100ml, línea She She - Fáakihat Al-Ahlam (Ítem SS018). Notas florales suaves.",
+    "imagen": "assets/images/perfumes/she-she-ss018.webp"
+  },
+  {
+    "id": 3,
+    "nombre": "She She Fáakihat Al-Ahlam SS039",
+    "categoria": "perfume-mujer",
+    "precio": "8000",
+    "descripcion": "Eau de Parfum 100ml, línea She She - Fáakihat Al-Ahlam (Ítem SS039). Diseño luna y estrellas.",
+    "imagen": "assets/images/perfumes/she-she-ss039.webp"
+  },
+  {
+    "id": 4,
+    "nombre": "She She Fáakihat Al-Ahlam SS010",
+    "categoria": "perfume-mujer",
+    "precio": "8000",
+    "descripcion": "Eau de Parfum 100ml, línea She She - Fáakihat Al-Ahlam (Ítem SS010). Frasco dorado, aroma intenso.",
+    "imagen": "assets/images/perfumes/she-she-ss010.webp"
+  },
+  {
+    "id": 5,
+    "nombre": "She She Fáakihat Al-Ahlam SS030",
+    "categoria": "perfume-mujer",
+    "precio": "8000",
+    "descripcion": "Eau de Parfum 100ml, línea She She - Fáakihat Al-Ahlam (Ítem SS030). Frasco borgoña, aroma envolvente.",
+    "imagen": "assets/images/perfumes/she-she-ss030.webp"
+  },
+  {
+    "id": 6,
+    "nombre": "She She Fáakihat Al-Ahlam SS015",
+    "categoria": "perfume-mujer",
+    "precio": "8000",
+    "descripcion": "Eau de Parfum 100ml, línea She She - Fáakihat Al-Ahlam (Ítem SS015). Frasco negro y rosado.",
+    "imagen": "assets/images/perfumes/she-she-ss015.webp"
+  },
+  {
+    "id": 7,
+    "nombre": "Set Fáakihat Al-Ahlam para Hombre (3 pzs)",
+    "categoria": "perfume-hombre",
+    "precio": "Consultar",
+    "descripcion": "Set de 3 fragancias Eau de Parfum de 50ml cada una, línea Fáakihat Al-Ahlam para hombre. Ideal para regalo.",
+    "imagen": "assets/images/perfumes/set-3pzs-hombre.webp"
+  }
+]

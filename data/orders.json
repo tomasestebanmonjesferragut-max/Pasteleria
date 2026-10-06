@@ -1,0 +1,11 @@
+{
+  "maxUnidadesPorProducto": 99,
+  "mensaje": {
+    "encabezado": "Hola, quiero hacer este pedido:",
+    "linea": "- {cantidad} x {nombre} ({precio})",
+    "precioPorConsultar": "precio por consultar",
+    "total": "Total estimado: {total}",
+    "totalMasConsultar": "Total estimado: {total} (+ productos por consultar)",
+    "sinTotal": "Precios por consultar"
+  }
+}

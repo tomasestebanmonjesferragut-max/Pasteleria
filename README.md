@@ -1,89 +1,95 @@
 # Dulzura en tu Hogar
 
-Sitio web y backend de **Dulzura en tu Hogar**: pastelería artesanal, perfumería y almacén en Maipú, Santiago de Chile.
+Sitio web de **Dulzura en tu Hogar**: pastelería artesanal, perfumería y almacén en Maipú, Santiago de Chile.
 
-- Frontend: HTML/CSS/JS estático (`public/`), sin frameworks.
-- Backend: Node.js + Express (`server.js`), API REST en `/api/*`.
-- Base de datos: MySQL (`data/database.sql`).
-- Autenticación: contraseñas cifradas con bcrypt + sesiones firmadas con JWT.
+Es un **sitio estático** (HTML, CSS y JavaScript, sin servidor ni base de datos). Se puede publicar gratis en GitHub Pages o en cualquier hosting de archivos. Los pedidos se envían por WhatsApp.
 
-## Requisitos
+> La versión anterior, con servidor Node.js, MySQL, login y panel de administración, quedó en el commit `bdabbc4` del historial de git.
 
-- Node.js 18 o superior
-- MySQL 8 (o compatible) corriendo localmente o en un hosting
-
-## Puesta en marcha (desarrollo local)
-
-1. Instala las dependencias:
-   ```
-   npm install
-   ```
-2. Crea la base de datos y las tablas:
-   ```
-   mysql -u root -p < data/database.sql
-   ```
-3. Copia `.env.example` a `.env` y completa tus datos (usuario/contraseña de MySQL y un `JWT_SECRET` propio):
-   ```
-   cp .env.example .env
-   ```
-4. Crea tu primera cuenta de administrador (te pide la contraseña de forma interactiva, nunca queda en texto plano):
-   ```
-   npm run create-admin -- "Tu Nombre" tu-correo@ejemplo.com +56900000000
-   ```
-5. Arranca el servidor:
-   ```
-   npm start
-   ```
-6. Abre `http://localhost:3000` en el navegador.
-
-## Estructura del proyecto
+## Estructura
 
 ```
-public/          Frontend (HTML, CSS, JS, imágenes)
-  html/          Páginas del sitio
-  css/styles.css Estilos
-  js/            core.js (estado/UI) → login.js (auth) → menu.js (catálogo) → admin.js (panel admin)
-data/
-  database.sql   Esquema de la base de datos
-  uploads/       Fotos de productos subidas desde el panel admin
+index.html               Solo redirige a pages/index.html (GitHub Pages exige uno en la raíz)
+404.html                 Solo redirige a pages/404.html (GitHub Pages solo usa uno en la raíz)
+pages/
+  index.html             Portada
+  productos.html         Catálogo con categorías y buscador
+  contacto.html          Historia, formulario de contacto y ubicación
+  403.html, 404.html, 500.html
+assets/
+  images/                Fotos (WebP) y negocio.jpg (solo para las vistas previas al compartir)
+  icons/                 Favicon
+  css/, js/              Vacías: reservadas para librerías de terceros
+styles/main.css
 scripts/
-  create-admin.js  Crea/actualiza una cuenta de administrador de forma segura
-server.js        Servidor Express y rutas de la API
-db.js            Conexión (pool) a MySQL
+  core.js                Configuración, rutas, enlaces de contacto, scroll, FAQ, menú móvil, formulario de contacto
+  modal-handler.js       Modal accesible y avisos de error (reemplaza alert/confirm)
+  search.js              Buscador por nombre
+  products.js            Catálogo, categorías y detalle de producto
+  cart.js                "Mi pedido": arma el mensaje de WhatsApp
+data/
+  products.json          Catálogo de productos
+  config.json            Teléfonos de contacto
+  orders.json            Formato del mensaje de pedido y límites
+robots.txt, sitemap.xml
 ```
 
-## Variables de entorno (`.env`)
+## Errores
 
-| Variable      | Descripción                                              |
-|---------------|-----------------------------------------------------------|
-| `PORT`        | Puerto del servidor (los hostings lo asignan solos)       |
-| `DB_HOST`     | Host de MySQL                                              |
-| `DB_USER`     | Usuario de MySQL                                            |
-| `DB_PASSWORD` | Contraseña de MySQL                                         |
-| `DB_NAME`     | Nombre de la base de datos                                  |
-| `JWT_SECRET`  | Secreto para firmar los tokens de sesión (obligatorio)       |
+- Si un archivo de datos responde **403**, **404** o **5xx**, el sitio lleva a `pages/403.html`, `pages/404.html` o `pages/500.html`.
+- Cualquier otro fallo (sin conexión, JSON dañado, error de un script) se muestra en un modal.
+- Una ruta inexistente muestra `pages/404.html` (GitHub Pages usa el `404.html` de la raíz, que redirige a ella).
 
-**Nunca subas el archivo `.env` a git** — ya está en `.gitignore`.
+## Ver el sitio en tu computador
 
-## Despliegue en producción
+Abre una terminal en esta carpeta y ejecuta:
 
-GitHub Pages **no sirve** para este proyecto porque solo publica archivos
-estáticos y no puede correr el backend de Node/Express ni conectarse a
-MySQL. Para que el login, el catálogo dinámico y el formulario de contacto
-funcionen de verdad en el dominio propio, el proyecto necesita un hosting
-que ejecute Node.js (por ejemplo Render, Railway o Fly.io) con una base de
-datos MySQL asociada. En ese hosting:
+```
+npx http-server . -p 8080
+```
 
-1. Sube este repositorio (o conéctalo directo desde GitHub).
-2. Define las variables de entorno de la tabla de arriba en el panel del hosting.
-3. Configura el comando de arranque como `npm start`.
-4. Apunta el DNS del dominio comprado hacia la URL/IP que te entregue el hosting.
+Luego entra a `http://localhost:8080`. No abras los `.html` con doble clic: el navegador bloquea la lectura de los archivos `.json`.
 
-## Seguridad
+## Cambiar datos
 
-- Las contraseñas se guardan cifradas con `bcrypt`, nunca en texto plano.
-- Las rutas de administración (crear/editar/borrar productos, ver/borrar
-  mensajes) exigen un token JWT válido con rol `admin`; no basta con
-  "verse" como admin en el navegador.
-- Hay un límite de intentos de login/registro por IP (protección básica
-  contra fuerza bruta).
+**Teléfonos:** edita `data/config.json`, el único lugar donde están escritos. Ahí están el número principal y el de perfumes (Patty). Los botones y enlaces de WhatsApp y de llamada, los números visibles y el teléfono que se entrega a Google (JSON-LD) se arman desde ese archivo; ningún HTML los contiene.
+
+**Mensaje del pedido:** edita `data/orders.json` para cambiar el saludo, el formato de cada línea o el máximo de unidades por producto. Los textos aceptan `{cantidad}`, `{nombre}`, `{precio}` y `{total}`.
+
+**Productos:** edita `data/products.json` y agrega la foto en `assets/images/` (formato WebP).
+
+```json
+{
+  "id": 8,
+  "nombre": "Nombre del producto",
+  "categoria": "perfume-mujer",
+  "precio": "8000",
+  "descripcion": "Texto corto.",
+  "imagen": "assets/images/perfumes/mi-foto.webp"
+}
+```
+
+- `id`: número único, no se repite.
+- `precio`: solo dígitos (`"8000"`) o un texto como `"Consultar"`.
+- `imagen`: ruta desde la raíz del proyecto.
+- `categoria` define dónde aparece:
+  - Dulce: `tortas`, `cupcakes`, `alfajores`
+  - Perfume: `perfume-hombre`, `perfume-mujer`, `perfume-unisex`
+  - Almacén: `almacen-abarrotes`, `almacen-bebidas`, `almacen-snacks`, `almacen-limpieza`
+- Los productos de categoría `perfume-*` se piden al WhatsApp de perfumes; el resto, al principal.
+
+## Huellas SHA-256 del pedido
+
+Cuando un cliente agrega un producto a "Mi pedido", se guarda junto con una huella SHA-256 de su nombre, categoría y precio. Al abrir el pedido, el sitio la compara con el catálogo actual: si el precio o los datos cambiaron, actualiza el pedido y avisa al cliente; si el producto ya no existe, lo quita. No hay que mantener ninguna huella a mano: se calculan en el navegador (solo disponible en HTTPS o localhost).
+
+## Publicar en GitHub Pages
+
+En el repositorio: **Settings → Pages → Deploy from a branch → `main` / `(root)`**. El archivo `.nojekyll` evita que GitHub procese el sitio con Jekyll.
+
+## Cuando tengan dominio propio
+
+La dirección actual (`https://tomasestebanmonjesferragut-max.github.io/Pasteleria/`) aparece en las etiquetas `canonical`, `og:url`, `og:image` y el JSON-LD de cada página, en el `index.html` de la raíz, en `sitemap.xml` y en `robots.txt`. Para cambiarla, reemplaza ese texto por el dominio nuevo en todos esos archivos (buscar y reemplazar en todo el proyecto) y configura el dominio en **Settings → Pages**.
+
+## Qué no hace este sitio
+
+No tiene cuentas de cliente, panel de administración ni almacenamiento de mensajes o pedidos: todo lo que el cliente quiere se envía a WhatsApp. Si en el futuro se necesitan, hay que volver a incorporar un servidor.
